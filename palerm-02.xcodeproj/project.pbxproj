@@ -14,6 +14,13 @@
 		C2562999234F5FD300F00191 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C2562997234F5FD300F00191 /* LaunchScreen.storyboard */; };
 		C25629A4234F5FD300F00191 /* palerm_02Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C25629A3234F5FD300F00191 /* palerm_02Tests.swift */; };
 		C25629AF234F5FD300F00191 /* palerm_02UITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C25629AE234F5FD300F00191 /* palerm_02UITests.swift */; };
+		C25629BE234F633F00F00191 /* AlermListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C25629BD234F633F00F00191 /* AlermListViewController.swift */; };
+		C25629C0234F63AE00F00191 /* AlermList.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C25629BF234F63AE00F00191 /* AlermList.storyboard */; };
+		C25629C3234F666800F00191 /* Color.swift in Sources */ = {isa = PBXBuildFile; fileRef = C25629C2234F666800F00191 /* Color.swift */; };
+		C25629C5234F669500F00191 /* Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = C25629C4234F669500F00191 /* Extension.swift */; };
+		C25629C8234F723D00F00191 /* LocalCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = C25629C7234F723D00F00191 /* LocalCache.swift */; };
+		C25629CA234F726200F00191 /* AlermListPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C25629C9234F726200F00191 /* AlermListPresenter.swift */; };
+		C25629CC234F749F00F00191 /* AlermListModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C25629CB234F749F00F00191 /* AlermListModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -47,6 +54,13 @@
 		C25629AA234F5FD300F00191 /* palerm-02UITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "palerm-02UITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		C25629AE234F5FD300F00191 /* palerm_02UITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = palerm_02UITests.swift; sourceTree = "<group>"; };
 		C25629B0234F5FD300F00191 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		C25629BD234F633F00F00191 /* AlermListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlermListViewController.swift; sourceTree = "<group>"; };
+		C25629BF234F63AE00F00191 /* AlermList.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = AlermList.storyboard; sourceTree = "<group>"; };
+		C25629C2234F666800F00191 /* Color.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Color.swift; sourceTree = "<group>"; };
+		C25629C4234F669500F00191 /* Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extension.swift; sourceTree = "<group>"; };
+		C25629C7234F723D00F00191 /* LocalCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalCache.swift; sourceTree = "<group>"; };
+		C25629C9234F726200F00191 /* AlermListPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlermListPresenter.swift; sourceTree = "<group>"; };
+		C25629CB234F749F00F00191 /* AlermListModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlermListModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -97,12 +111,16 @@
 		C256298D234F5FD200F00191 /* palerm-02 */ = {
 			isa = PBXGroup;
 			children = (
+				C25629C6234F721000F00191 /* Util */,
+				C25629C1234F665A00F00191 /* Config */,
+				C25629BC234F630B00F00191 /* AlermList */,
 				C256298E234F5FD200F00191 /* AppDelegate.swift */,
 				C2562990234F5FD200F00191 /* ViewController.swift */,
 				C2562992234F5FD200F00191 /* Main.storyboard */,
 				C2562995234F5FD300F00191 /* Assets.xcassets */,
 				C2562997234F5FD300F00191 /* LaunchScreen.storyboard */,
 				C256299A234F5FD300F00191 /* Info.plist */,
+				C25629C4234F669500F00191 /* Extension.swift */,
 			);
 			path = "palerm-02";
 			sourceTree = "<group>";
@@ -123,6 +141,33 @@
 				C25629B0234F5FD300F00191 /* Info.plist */,
 			);
 			path = "palerm-02UITests";
+			sourceTree = "<group>";
+		};
+		C25629BC234F630B00F00191 /* AlermList */ = {
+			isa = PBXGroup;
+			children = (
+				C25629BD234F633F00F00191 /* AlermListViewController.swift */,
+				C25629BF234F63AE00F00191 /* AlermList.storyboard */,
+				C25629C9234F726200F00191 /* AlermListPresenter.swift */,
+				C25629CB234F749F00F00191 /* AlermListModel.swift */,
+			);
+			path = AlermList;
+			sourceTree = "<group>";
+		};
+		C25629C1234F665A00F00191 /* Config */ = {
+			isa = PBXGroup;
+			children = (
+				C25629C2234F666800F00191 /* Color.swift */,
+			);
+			path = Config;
+			sourceTree = "<group>";
+		};
+		C25629C6234F721000F00191 /* Util */ = {
+			isa = PBXGroup;
+			children = (
+				C25629C7234F723D00F00191 /* LocalCache.swift */,
+			);
+			path = Util;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -229,6 +274,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C25629C0234F63AE00F00191 /* AlermList.storyboard in Resources */,
 				C2562999234F5FD300F00191 /* LaunchScreen.storyboard in Resources */,
 				C2562996234F5FD300F00191 /* Assets.xcassets in Resources */,
 				C2562994234F5FD200F00191 /* Main.storyboard in Resources */,
@@ -256,8 +302,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C25629C8234F723D00F00191 /* LocalCache.swift in Sources */,
+				C25629C5234F669500F00191 /* Extension.swift in Sources */,
 				C2562991234F5FD200F00191 /* ViewController.swift in Sources */,
+				C25629C3234F666800F00191 /* Color.swift in Sources */,
 				C256298F234F5FD200F00191 /* AppDelegate.swift in Sources */,
+				C25629CC234F749F00F00191 /* AlermListModel.swift in Sources */,
+				C25629BE234F633F00F00191 /* AlermListViewController.swift in Sources */,
+				C25629CA234F726200F00191 /* AlermListPresenter.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -435,6 +487,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 7A4PPWAY72;
 				INFOPLIST_FILE = "palerm-02/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 12.4;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -453,6 +506,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 7A4PPWAY72;
 				INFOPLIST_FILE = "palerm-02/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 12.4;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
