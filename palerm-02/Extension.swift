@@ -26,3 +26,22 @@ extension UIColor {
         self.init(red: R, green: G, blue: B, alpha: alpha)
     }
 }
+
+extension UIStackView {
+    func addBackground(_ color: UIColor, _ cornerRadius: CGFloat = 0, _ top: Bool = false, _ shadow: Bool = false) {
+        let subView = UIView(frame: bounds)
+        subView.backgroundColor = color
+        subView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        subView.layer.cornerRadius = cornerRadius
+        if top {
+            subView.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
+        }
+        if shadow {
+            subView.layer.shadowColor = UIColor.black.cgColor
+            subView.layer.shadowOpacity = 0.3
+            subView.layer.shadowRadius = 16
+            subView.layer.shadowOffset = CGSize(width: 0, height: 5)
+        }
+        insertSubview(subView, at: 0)
+    }
+}
