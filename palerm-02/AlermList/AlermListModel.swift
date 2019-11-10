@@ -12,30 +12,28 @@ protocol AlermListModelProtocol {
     func loadAlermListFromLocalCache()
 }
 
+let alermTestData = Alerms(times: [
+    ["08:00", "08:05", "08:10", "08:15", "08:20", "08:25", "08:30"],
+    ["09:30"],
+    ["10:10", "10:15", "10:20"]
+    ])
+
 class AlermListModel: AlermListModelProtocol {
     
     let localCache: LocalCache = .shared
     
     func loadAlermListFromLocalCache() {
-        print("-- load alerm list in model")
-//        localCache.setData(forKey: "hoge", "hoge")
-//        localCache.setData(forKey: "Boolean", true)
-//        localCache.setData(forKey: "[String]", ["string1", "string2"])
-        let dummyData: DummyData = DummyData(id: 1, name: "name")
-//        localCache.(forKey: "dummydatate", dummyData)
-        localCache.setEncodableObject(forKey: "dummydata", value: dummyData)
-        let data = localCache.getDecodableObject(forKey: "dummydata") as DummyData?
-        print("--- data: ", data!)
+//        localCache.setEncodableObject(forKey: "alerms", value: alermTestData)
+        let data = localCache.getDecodableObject(forKey: "alerms") as Alerms?
+        guard let alerms = data?.times else { return }
+        print("--- load alerms data: ", alerms)
     }
 }
 
-
-struct DummyData: Codable {
-    let id: Int
-    let name: String
+struct Alerms: Codable {
+    let times: [[String]]
     
-    init(id: Int, name: String) {
-        self.id = id
-        self.name = name
+    init(times: [[String]]) {
+        self.times = times
     }
 }
