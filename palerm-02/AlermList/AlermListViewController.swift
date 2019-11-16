@@ -130,7 +130,71 @@ extension AlermListViewController: UITableViewDataSource {
 }
 
 extension AlermListViewController: AlermListPresenterOutput {
-    func resizeAlermCard() {
-        print("--- resize alerm card")
+    func resizeAlermCard(alermCard: AlermCard) {
+        guard
+            alermCard.alermTimeCellList != nil,
+            alermCard.alermTimeCellList?.height != nil,
+            alermCard.alermTimeCellList?.heightConstraints != nil,
+            alermCard.foot != nil,
+            alermCard.foot?.pullIcon != nil
+        else { return }
+        
+        if !alermCard.isExpand {
+            self.openAlermTimeCellList(alermCard: alermCard)
+        } else {
+            self.closeAlermTimeCellList(alermCard: alermCard)
+        }
+    }
+    
+    func openAlermTimeCellList(alermCard: AlermCard) {
+        self.tableView.beginUpdates()
+        alermCard.isExpand = true
+        self.tableView.endUpdates()
+        
+        alermCard.alermTimeCellList!.heightConstraints!.constant = alermCard.alermTimeCellList!.height!
+        alermCard.alermTimeCellList!.selfView.alpha = 1
+        alermCard.foot!.pullIcon!.transform = CGAffineTransform(rotationAngle: CGFloat(180 * (CGFloat.pi / 180)))
+        UIView.animate(
+            withDuration: 0.3,
+            delay: 0,
+            options: [.curveEaseOut],
+            animations: {
+                let point = alermCard.selfView.frame.origin
+                alermCard.selfView.frame = CGRect(
+                    x: point.x,
+                    y: point.y,
+                    width: alermCard.selfView.frame.width,
+                    height: alermCard.selfView.frame.height + alermCard.alermTimeCellList!.height!
+                )
+                self.view.layoutIfNeeded()
+            },
+            completion: nil)
+    }
+    
+    func closeAlermTimeCellList(alermCard: AlermCard) {
+        alermCard.alermTimeCellList!.heightConstraints!.constant = 0
+        alermCard.foot!.pullIcon!.transform = CGAffineTransform(rotationAngle: CGFloat(0 * (CGFloat.pi / 180)))
+        UIView.animate(
+            withDuration: 0.3,
+            delay: 0,
+            options: [.curveEaseOut],
+            animations: {
+                let point = alermCard.selfView.frame.origin
+                alermCard.selfView.frame = CGRect(
+                    x: point.x,
+                    y: point.y,
+                    width: alermCard.selfView.frame.width,
+                    height: alermCard.selfView.frame.height - alermCard.alermTimeCellList!.height!
+                )
+                self.view.layoutIfNeeded()
+
+                self.tableView.beginUpdates()
+                alermCard.isExpand = false
+                self.tableView.endUpdates()
+                alermCard.alermTimeCellList!.selfView.alpha = 0
+            },
+            completion: nil
+        )
+        
     }
 }

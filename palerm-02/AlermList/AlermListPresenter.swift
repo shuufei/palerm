@@ -16,7 +16,7 @@ protocol AlermListPresenterInput {
 }
 
 protocol AlermListPresenterOutput: AnyObject {
-    func resizeAlermCard()
+    func resizeAlermCard(alermCard: AlermCard)
 }
 
 final class AlermListPresenter: AlermListPresenterInput {
@@ -40,12 +40,13 @@ final class AlermListPresenter: AlermListPresenterInput {
         self.alermCardGenerator.delegate = self
         self.model.alerms.bind { alerms in
             print("--- changed alerms: ", alerms)
-            for (_, times) in alerms.enumerated() {
+            for (index, times) in alerms.enumerated() {
                 var alermCard: AlermCard?
                 if times.count == 1 {
                     alermCard = self.alermCardGenerator.generate(time: times[0])
                 } else {
                     alermCard = self.alermCardGenerator.generate(times: times)
+                    alermCard!.foot!.selfView.tag = index
                 }
                 self._alermCardList.append(alermCard!)
             }
@@ -64,6 +65,7 @@ extension AlermListPresenter: AlermCardDelegate {
     }
     
     func tappedExpandTrigger(_ sender: UITapGestureRecognizer) {
-        self.view.resizeAlermCard()
+        guard let index = sender.view?.tag else { return }
+        self.view.resizeAlermCard(alermCard: self.alermCardList[index]) 
     }
 }
