@@ -18,6 +18,7 @@ protocol AlermListPresenterInput {
 protocol AlermListPresenterOutput: AnyObject {
     func resizeAlermCard(alermCard: AlermCard)
     func layoutIfNeededWithAnimation()
+    func presentToSetting(viewController: UIViewController)
 }
 
 final class AlermListPresenter: AlermListPresenterInput {
@@ -100,6 +101,8 @@ extension AlermListPresenter: AlermCardDelegate {
                 self.view.layoutIfNeededWithAnimation()
                 return
             }
+            let alermSettingViewController = UIStoryboard(name: "AlermSetting", bundle: nil).instantiateInitialViewController() as! AlermSettingViewController
+            self.view.presentToSetting(viewController: alermSettingViewController)
             topAnchor.constant = topAnchorInitValue
             self.view.layoutIfNeededWithAnimation()
             break

@@ -202,4 +202,8 @@ extension AlermListViewController: AlermListPresenterOutput {
             self.view.layoutIfNeeded()
         })
     }
+    
+    func presentToSetting(viewController: UIViewController) {
+        present(viewController, animated: true, completion: nil)
+    }
 }
