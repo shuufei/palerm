@@ -10,13 +10,18 @@ import UIKit
 import RxCocoa
 import RxSwift
 
-protocol AlermListPresenterProtocol {
+protocol AlermListPresenterInput {
     func loadAlermList()
     var alermCardList: [AlermCard] { get }
 }
 
-final class AlermListPresenter: AlermListPresenterProtocol {
+protocol AlermListPresenterOutput: AnyObject {
+    func resizeAlermCard()
+}
+
+final class AlermListPresenter: AlermListPresenterInput {
     
+    private weak var view: AlermListPresenterOutput!
     private let model: AlermListModelProtocol
     private let disposeBag = DisposeBag()
     private var _alermCardList: [AlermCard] = []
@@ -27,15 +32,22 @@ final class AlermListPresenter: AlermListPresenterProtocol {
         }
     }
     
-    private let alermCardGenerator = AlermCardGenerator()
+    public let alermCardGenerator = AlermCardGenerator()
     
-    init(model: AlermListModelProtocol) {
+    init(view: AlermListPresenterOutput, model: AlermListModelProtocol) {
+        self.view = view
         self.model = model
+        self.alermCardGenerator.delegate = self
         self.model.alerms.bind { alerms in
             print("--- changed alerms: ", alerms)
             for (_, times) in alerms.enumerated() {
-                let alermCard: AlermCard = self.alermCardGenerator.generate(time: times[0])
-                self._alermCardList.append(alermCard)
+                var alermCard: AlermCard?
+                if times.count == 1 {
+                    alermCard = self.alermCardGenerator.generate(time: times[0])
+                } else {
+                    alermCard = self.alermCardGenerator.generate(times: times)
+                }
+                self._alermCardList.append(alermCard!)
             }
         }
         .disposed(by: self.disposeBag)
@@ -43,5 +55,15 @@ final class AlermListPresenter: AlermListPresenterProtocol {
 
     func loadAlermList() {
         model.loadAlermListFromLocalCache()
+    }
+}
+
+extension AlermListPresenter: AlermCardDelegate {
+    func tapped(_ sender: UILongPressGestureRecognizer) {
+        print("--- tapped in alerm list presenter")
+    }
+    
+    func tappedExpandTrigger(_ sender: UITapGestureRecognizer) {
+        self.view.resizeAlermCard()
     }
 }

@@ -15,8 +15,8 @@ final class AlermListViewController: UIViewController {
     
     private let disposeBag = DisposeBag()
     
-    private var presenter: AlermListPresenterProtocol!
-    func inject(presenter: AlermListPresenterProtocol) {
+    private var presenter: AlermListPresenterInput!
+    func inject(presenter: AlermListPresenterInput) {
         self.presenter = presenter
     }
 
@@ -126,5 +126,11 @@ extension AlermListViewController: UITableViewDataSource {
         alermCard.trailingAnchor.constraint(equalTo: cell.trailingAnchor, constant: -16).isActive = true
         cell.layoutIfNeeded()
         return cell
+    }
+}
+
+extension AlermListViewController: AlermListPresenterOutput {
+    func resizeAlermCard() {
+        print("--- resize alerm card")
     }
 }

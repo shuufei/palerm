@@ -3,10 +3,12 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 51;
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3BCF54CAC0CDDCBE68CE974D /* Pods_palerm_02_palerm_02UITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1B885C06B1DAD116BCD840B5 /* Pods_palerm_02_palerm_02UITests.framework */; };
+		C0A7B856E6A954C6F0D1073A /* Pods_palerm_02Tests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3DD467AEE908C572A4E94748 /* Pods_palerm_02Tests.framework */; };
 		C256298F234F5FD200F00191 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C256298E234F5FD200F00191 /* AppDelegate.swift */; };
 		C2562991234F5FD200F00191 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2562990234F5FD200F00191 /* ViewController.swift */; };
 		C2562994234F5FD200F00191 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C2562992234F5FD200F00191 /* Main.storyboard */; };
@@ -21,6 +23,8 @@
 		C25629C8234F723D00F00191 /* LocalCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = C25629C7234F723D00F00191 /* LocalCache.swift */; };
 		C25629CA234F726200F00191 /* AlermListPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C25629C9234F726200F00191 /* AlermListPresenter.swift */; };
 		C25629CC234F749F00F00191 /* AlermListModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C25629CB234F749F00F00191 /* AlermListModel.swift */; };
+		C265E20423784145008C769D /* AlermCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = C265E20323784145008C769D /* AlermCard.swift */; };
+		EE9C407F2F8CC2100EB5FD22 /* Pods_palerm_02.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B7F71B8A9A2A4107BF08DA25 /* Pods_palerm_02.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -41,6 +45,14 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		014580DDDACA99F22B0B4799 /* Pods-palerm-02.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-palerm-02.release.xcconfig"; path = "Target Support Files/Pods-palerm-02/Pods-palerm-02.release.xcconfig"; sourceTree = "<group>"; };
+		10941237CA1CCF488DB264C6 /* Pods-palerm-02Tests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-palerm-02Tests.release.xcconfig"; path = "Target Support Files/Pods-palerm-02Tests/Pods-palerm-02Tests.release.xcconfig"; sourceTree = "<group>"; };
+		1B885C06B1DAD116BCD840B5 /* Pods_palerm_02_palerm_02UITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_palerm_02_palerm_02UITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		2BC53698F6382072148D85B0 /* Pods-palerm-02-palerm-02UITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-palerm-02-palerm-02UITests.release.xcconfig"; path = "Target Support Files/Pods-palerm-02-palerm-02UITests/Pods-palerm-02-palerm-02UITests.release.xcconfig"; sourceTree = "<group>"; };
+		3DD467AEE908C572A4E94748 /* Pods_palerm_02Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_palerm_02Tests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		5C893CE0E456A5A4AC7CE79C /* Pods-palerm-02.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-palerm-02.debug.xcconfig"; path = "Target Support Files/Pods-palerm-02/Pods-palerm-02.debug.xcconfig"; sourceTree = "<group>"; };
+		B7F71B8A9A2A4107BF08DA25 /* Pods_palerm_02.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_palerm_02.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		BDC49FF0AD1700D08483EC11 /* Pods-palerm-02-palerm-02UITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-palerm-02-palerm-02UITests.debug.xcconfig"; path = "Target Support Files/Pods-palerm-02-palerm-02UITests/Pods-palerm-02-palerm-02UITests.debug.xcconfig"; sourceTree = "<group>"; };
 		C256298B234F5FD200F00191 /* palerm-02.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "palerm-02.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		C256298E234F5FD200F00191 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		C2562990234F5FD200F00191 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -61,6 +73,8 @@
 		C25629C7234F723D00F00191 /* LocalCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalCache.swift; sourceTree = "<group>"; };
 		C25629C9234F726200F00191 /* AlermListPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlermListPresenter.swift; sourceTree = "<group>"; };
 		C25629CB234F749F00F00191 /* AlermListModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlermListModel.swift; sourceTree = "<group>"; };
+		C265E20323784145008C769D /* AlermCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlermCard.swift; sourceTree = "<group>"; };
+		C9484E9F2569F6C7D8881388 /* Pods-palerm-02Tests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-palerm-02Tests.debug.xcconfig"; path = "Target Support Files/Pods-palerm-02Tests/Pods-palerm-02Tests.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -68,6 +82,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EE9C407F2F8CC2100EB5FD22 /* Pods_palerm_02.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -75,6 +90,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C0A7B856E6A954C6F0D1073A /* Pods_palerm_02Tests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -82,12 +98,26 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3BCF54CAC0CDDCBE68CE974D /* Pods_palerm_02_palerm_02UITests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		28ECB28F25CD0424C5FD3CF0 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				5C893CE0E456A5A4AC7CE79C /* Pods-palerm-02.debug.xcconfig */,
+				014580DDDACA99F22B0B4799 /* Pods-palerm-02.release.xcconfig */,
+				BDC49FF0AD1700D08483EC11 /* Pods-palerm-02-palerm-02UITests.debug.xcconfig */,
+				2BC53698F6382072148D85B0 /* Pods-palerm-02-palerm-02UITests.release.xcconfig */,
+				C9484E9F2569F6C7D8881388 /* Pods-palerm-02Tests.debug.xcconfig */,
+				10941237CA1CCF488DB264C6 /* Pods-palerm-02Tests.release.xcconfig */,
+			);
+			path = Pods;
+			sourceTree = "<group>";
+		};
 		C2562982234F5FD200F00191 = {
 			isa = PBXGroup;
 			children = (
@@ -95,6 +125,8 @@
 				C25629A2234F5FD300F00191 /* palerm-02Tests */,
 				C25629AD234F5FD300F00191 /* palerm-02UITests */,
 				C256298C234F5FD200F00191 /* Products */,
+				28ECB28F25CD0424C5FD3CF0 /* Pods */,
+				EEBBDAB8F55DD4319F6802FC /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -113,6 +145,7 @@
 			children = (
 				C25629C6234F721000F00191 /* Util */,
 				C25629C1234F665A00F00191 /* Config */,
+				C265E2022378412E008C769D /* AlermCard */,
 				C25629BC234F630B00F00191 /* AlermList */,
 				C256298E234F5FD200F00191 /* AppDelegate.swift */,
 				C2562990234F5FD200F00191 /* ViewController.swift */,
@@ -170,6 +203,24 @@
 			path = Util;
 			sourceTree = "<group>";
 		};
+		C265E2022378412E008C769D /* AlermCard */ = {
+			isa = PBXGroup;
+			children = (
+				C265E20323784145008C769D /* AlermCard.swift */,
+			);
+			path = AlermCard;
+			sourceTree = "<group>";
+		};
+		EEBBDAB8F55DD4319F6802FC /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				B7F71B8A9A2A4107BF08DA25 /* Pods_palerm_02.framework */,
+				1B885C06B1DAD116BCD840B5 /* Pods_palerm_02_palerm_02UITests.framework */,
+				3DD467AEE908C572A4E94748 /* Pods_palerm_02Tests.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -177,9 +228,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = C25629B3234F5FD300F00191 /* Build configuration list for PBXNativeTarget "palerm-02" */;
 			buildPhases = (
+				BBC5A27E3349315B4F629338 /* [CP] Check Pods Manifest.lock */,
 				C2562987234F5FD200F00191 /* Sources */,
 				C2562988234F5FD200F00191 /* Frameworks */,
 				C2562989234F5FD200F00191 /* Resources */,
+				E513C1D4B7A0423825BD8233 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -194,9 +247,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = C25629B6234F5FD300F00191 /* Build configuration list for PBXNativeTarget "palerm-02Tests" */;
 			buildPhases = (
+				34AAA74A7EEEE0974E9B409C /* [CP] Check Pods Manifest.lock */,
 				C256299B234F5FD300F00191 /* Sources */,
 				C256299C234F5FD300F00191 /* Frameworks */,
 				C256299D234F5FD300F00191 /* Resources */,
+				1ED91E6B5E6CE5D969E9C079 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -212,9 +267,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = C25629B9234F5FD300F00191 /* Build configuration list for PBXNativeTarget "palerm-02UITests" */;
 			buildPhases = (
+				0C5B47A6CCFDFCB3872580D4 /* [CP] Check Pods Manifest.lock */,
 				C25629A6234F5FD300F00191 /* Sources */,
 				C25629A7234F5FD300F00191 /* Frameworks */,
 				C25629A8234F5FD300F00191 /* Resources */,
+				DF6C39E5164ABC37AC65362B /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -297,6 +354,126 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		0C5B47A6CCFDFCB3872580D4 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-palerm-02-palerm-02UITests-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		1ED91E6B5E6CE5D969E9C079 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-palerm-02Tests/Pods-palerm-02Tests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-palerm-02Tests/Pods-palerm-02Tests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-palerm-02Tests/Pods-palerm-02Tests-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		34AAA74A7EEEE0974E9B409C /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-palerm-02Tests-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		BBC5A27E3349315B4F629338 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-palerm-02-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		DF6C39E5164ABC37AC65362B /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-palerm-02-palerm-02UITests/Pods-palerm-02-palerm-02UITests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-palerm-02-palerm-02UITests/Pods-palerm-02-palerm-02UITests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-palerm-02-palerm-02UITests/Pods-palerm-02-palerm-02UITests-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		E513C1D4B7A0423825BD8233 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-palerm-02/Pods-palerm-02-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-palerm-02/Pods-palerm-02-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-palerm-02/Pods-palerm-02-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		C2562987234F5FD200F00191 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -308,6 +485,7 @@
 				C25629C3234F666800F00191 /* Color.swift in Sources */,
 				C256298F234F5FD200F00191 /* AppDelegate.swift in Sources */,
 				C25629CC234F749F00F00191 /* AlermListModel.swift in Sources */,
+				C265E20423784145008C769D /* AlermCard.swift in Sources */,
 				C25629BE234F633F00F00191 /* AlermListViewController.swift in Sources */,
 				C25629CA234F726200F00191 /* AlermListPresenter.swift in Sources */,
 			);
@@ -482,6 +660,7 @@
 		};
 		C25629B4234F5FD300F00191 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 5C893CE0E456A5A4AC7CE79C /* Pods-palerm-02.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
@@ -501,6 +680,7 @@
 		};
 		C25629B5234F5FD300F00191 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 014580DDDACA99F22B0B4799 /* Pods-palerm-02.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
@@ -520,6 +700,7 @@
 		};
 		C25629B7234F5FD300F00191 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = C9484E9F2569F6C7D8881388 /* Pods-palerm-02Tests.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
@@ -541,6 +722,7 @@
 		};
 		C25629B8234F5FD300F00191 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 10941237CA1CCF488DB264C6 /* Pods-palerm-02Tests.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
@@ -562,6 +744,7 @@
 		};
 		C25629BA234F5FD300F00191 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = BDC49FF0AD1700D08483EC11 /* Pods-palerm-02-palerm-02UITests.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
@@ -582,6 +765,7 @@
 		};
 		C25629BB234F5FD300F00191 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 2BC53698F6382072148D85B0 /* Pods-palerm-02-palerm-02UITests.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;

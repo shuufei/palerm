@@ -18,7 +18,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let alermListViewController = UIStoryboard(name: "AlermList", bundle: nil).instantiateInitialViewController() as! AlermListViewController
         
         let model = AlermListModel()
-        let presenter = AlermListPresenter(model: model)
+        let presenter = AlermListPresenter(view: alermListViewController, model: model)
         alermListViewController.inject(presenter: presenter)
 
         window = UIWindow(frame: UIScreen.main.bounds)

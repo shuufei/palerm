@@ -70,8 +70,52 @@ class AlermCard {
     }
 }
 
+protocol AlermCardDelegate {
+    func tapped(_ sender: UILongPressGestureRecognizer)
+    func tappedExpandTrigger(_ sender: UITapGestureRecognizer)
+}
+
 class AlermCardGenerator {
+    let TIME_LABEL_MAX_COUNT_IN_ROW: Int = 4
+    let TIME_LABEL_SPACE: Int = 6
+    
+    var delegate: AlermCardDelegate?
+
     func generate(time: String) -> AlermCard {
+        let alermCardHead = self.generateAlermCardHead(time: time)
+        return AlermCard(view: alermCardHead.selfView, head: alermCardHead, alermTimeCellList: nil, foot: nil, isExpand: false)
+    }
+
+    func generate(times: [String]) -> AlermCard {
+        let alermCardHead = self.generateAlermCardHead(times: times)
+        let alermTimeCellList = self.generateAlermCardExpandView(times: times, width: alermCardHead.selfView.frame.width)
+        let alermCardFoot = self.generateAlermCardExpandViewTrigger(width: alermCardHead.selfView.frame.width)
+        
+        let alermCard = UIStackView()
+        alermCard.translatesAutoresizingMaskIntoConstraints = false
+        alermCard.heightAnchor.constraint(equalToConstant: alermCardHead.selfView.frame.height + alermCardFoot.selfView.frame.height)
+        alermCard.axis = .vertical
+        alermCard.distribution = .fill
+        alermCard.alignment = .fill
+        alermCard.clipsToBounds = false
+        alermCard.addArrangedSubview(alermCardHead.selfView)
+        alermCard.addArrangedSubview(alermTimeCellList.selfView)
+        alermCard.addArrangedSubview(alermCardFoot.selfView)
+        alermCard.addBackground(PalermColor.Dark500.UIColor, 5, false, true)
+        
+        return AlermCard(
+            view: alermCard,
+            head: alermCardHead,
+            alermTimeCellList: alermTimeCellList,
+            foot: alermCardFoot,
+            isExpand: false
+        )
+    }
+}
+
+// 時間が一つだけ設定されているAlermCard生成処理
+extension AlermCardGenerator {
+    private func generateAlermCardHead(time: String) -> AlermCardHead {
         let timeLabel = self.generateTimeLabelForSingleSetting(time: time)
         let switcher = UISwitch(frame: CGRect(x: 0, y: 0, width: 0, height: 0))
         switcher.sizeToFit()
@@ -81,31 +125,28 @@ class AlermCardGenerator {
         let bottomPadding = CGFloat(12)
         let leadingPadding = CGFloat(16)
         let trailingPadding = CGFloat(16)
-
+        
         labelAndSwitcherWrapper.translatesAutoresizingMaskIntoConstraints = false
-        labelAndSwitcherWrapper.heightAnchor.constraint(equalToConstant: switcher.frame.height + topPadding + bottomPadding)
+        let heightAnchor = labelAndSwitcherWrapper.heightAnchor.constraint(equalToConstant: switcher.frame.height + topPadding + bottomPadding)
+        heightAnchor.isActive = true
         labelAndSwitcherWrapper.axis = .horizontal
         labelAndSwitcherWrapper.distribution = .equalSpacing
         labelAndSwitcherWrapper.alignment = .center
         labelAndSwitcherWrapper.isLayoutMarginsRelativeArrangement = true
         labelAndSwitcherWrapper.directionalLayoutMargins = NSDirectionalEdgeInsets(top: topPadding, leading: leadingPadding, bottom: bottomPadding, trailing: trailingPadding)
         labelAndSwitcherWrapper.addBackground(PalermColor.Dark500.UIColor, 5, false, true)
-
+        
         labelAndSwitcherWrapper.addArrangedSubview(timeLabel)
         labelAndSwitcherWrapper.addArrangedSubview(switcher)
         
         let gesture = UILongPressGestureRecognizer(target: self, action: #selector(self.tapped(_:)))
         gesture.minimumPressDuration = 0
-
+        
         labelAndSwitcherWrapper.addGestureRecognizer(gesture)
         
         let alermCardHead = AlermCardHead(selfView: labelAndSwitcherWrapper, switcher: switcher)
         
-        return AlermCard(view: labelAndSwitcherWrapper, head: alermCardHead, alermTimeCellList: nil, foot: nil, isExpand: false)
-    }
-    
-    @objc func tapped(_ sender: UITapGestureRecognizer) {
-        print("--- tapped alerm card")
+        return alermCardHead
     }
     
     private func generateTimeLabelForSingleSetting(time: String) -> UILabel {
@@ -119,3 +160,231 @@ class AlermCardGenerator {
     }
 }
 
+// 時間が複数設定されているAlermCard生成処理
+extension AlermCardGenerator {
+    // 時間ラベルのStackViewとSwitcherのStackを生成
+    private func generateAlermCardHead(times: [String]) -> AlermCardHead {
+        let timeLabelStacksView = self.generateTimeLabelsList(times: times)
+        let switcher = UISwitch(frame: CGRect(x: 0, y: 0, width: 0, height: 0))
+        switcher.sizeToFit()
+        let labelsAndSwitcherWrapper = UIStackView()
+        let headPaddingTop: CGFloat = 12
+        let headPaddingBottom: CGFloat = 12
+        let labelsAndSwitcherWrapperHeight = timeLabelStacksView.frame.height < switcher.frame.height ? switcher.frame.height : timeLabelStacksView.frame.height
+        labelsAndSwitcherWrapper.translatesAutoresizingMaskIntoConstraints = false
+        labelsAndSwitcherWrapper.heightAnchor.constraint(equalToConstant: labelsAndSwitcherWrapperHeight + headPaddingTop + headPaddingBottom).isActive = true
+        labelsAndSwitcherWrapper.axis = .horizontal
+        labelsAndSwitcherWrapper.distribution = .equalSpacing
+        labelsAndSwitcherWrapper.alignment = .top
+        labelsAndSwitcherWrapper.isLayoutMarginsRelativeArrangement = true
+        labelsAndSwitcherWrapper.directionalLayoutMargins = NSDirectionalEdgeInsets(top: headPaddingTop, leading: 16, bottom: headPaddingBottom, trailing: 16)
+        labelsAndSwitcherWrapper.addBackground(PalermColor.Dark500.UIColor, 5, true)
+        labelsAndSwitcherWrapper.addArrangedSubview(timeLabelStacksView)
+        labelsAndSwitcherWrapper.addArrangedSubview(switcher)
+        let gesture = UILongPressGestureRecognizer(
+            target: self,
+            action: #selector(self.tapped(_:))
+        )
+        gesture.minimumPressDuration = 0
+        labelsAndSwitcherWrapper.addGestureRecognizer(gesture)
+        let alermCardHead = AlermCardHead(selfView: labelsAndSwitcherWrapper, switcher: switcher)
+        return alermCardHead
+    }
+    
+    // 拡縮可能な領域を生成。時間ごとにアラームのON／OFFを指定できるViewが含まれる。
+    private func generateAlermCardExpandView(times: [String], width: CGFloat) -> AlermCardTimeCellList {
+        var cells: [UIStackView] = []
+        var cellHeight: CGFloat = 0
+        
+        for time in times {
+            let cell = self.generateTimeCell(time: time, width: width)
+            cells.append(cell)
+            cellHeight += cell.frame.height
+        }
+        
+        let timeCellsWrapper = UIStackView(frame: CGRect(x: 0, y: 0, width: 0, height: cellHeight))
+        timeCellsWrapper.axis = .vertical
+        timeCellsWrapper.distribution = .fillEqually
+        timeCellsWrapper.alpha = 0
+        
+        for cell in cells {
+            timeCellsWrapper.addArrangedSubview(cell)
+        }
+        
+        let timeCellsWrapperHeightConstraints = timeCellsWrapper.heightAnchor.constraint(equalToConstant: 0)
+        timeCellsWrapperHeightConstraints.isActive = true
+        
+        return AlermCardTimeCellList(selfView: timeCellsWrapper, height: cellHeight, heightConstraints: timeCellsWrapperHeightConstraints)
+    }
+
+    // 時間ごとにアラームのON／OFFを指定できるViewを生成
+    private func generateTimeCell(time: String, width: CGFloat) -> UIStackView {
+        let stackView = UIStackView(frame: CGRect(x: 0, y: 0, width: width, height: 54))
+        stackView.axis = .horizontal
+        stackView.distribution = .fill
+        stackView.alignment = .center
+        stackView.addBackground(PalermColor.Dark400.UIColor)
+        
+        let timeLabel = UILabel()
+        timeLabel.text = time
+        timeLabel.font = UIFont.systemFont(ofSize: 18)
+        timeLabel.textColor = .white
+        timeLabel.sizeToFit()
+        timeLabel.textAlignment = .left
+        
+        let switcher = UISwitch(frame: CGRect(x: 0, y: 0, width: 0, height: 0))
+        switcher.sizeToFit()
+        
+        stackView.addSubview(timeLabel)
+        stackView.addSubview(switcher)
+        stackView.isLayoutMarginsRelativeArrangement = true
+        stackView.directionalLayoutMargins = NSDirectionalEdgeInsets(top: 0, leading: 16, bottom: 0, trailing: 16)
+        
+        let border = UIView()
+        border.translatesAutoresizingMaskIntoConstraints = false
+        border.heightAnchor.constraint(lessThanOrEqualToConstant: 0.5).isActive = true
+        border.backgroundColor = PalermColor.Dark100.UIColor
+        
+        let cell = UIStackView(frame: CGRect(x: 0, y: 0, width: 0, height: 54.5))
+        cell.axis = .vertical
+        cell.distribution = .fill
+        cell.addArrangedSubview(border)
+        cell.addArrangedSubview(stackView)
+        
+        return cell
+    }
+
+    // 拡縮を制御するためのViewを生成
+    private func generateAlermCardExpandViewTrigger(width: CGFloat) -> AlermCardFoot {
+        let borderHeight: CGFloat = 0.5
+        let triggerViewHeight: CGFloat = 30
+        
+        let triggerView = UIView()
+        triggerView.backgroundColor = PalermColor.Dark500.UIColor
+        triggerView.layer.cornerRadius = 5
+        triggerView.layer.maskedCorners = [.layerMinXMaxYCorner, .layerMinXMaxYCorner]
+        
+        triggerView.translatesAutoresizingMaskIntoConstraints = false
+        triggerView.heightAnchor.constraint(equalToConstant: triggerViewHeight).isActive = true
+        
+        let pullIcon = UIImage(named: "pull")
+        let pullIconView = UIImageView(image: pullIcon)
+        pullIconView.frame = CGRect(x: 0, y: 0, width: 23, height: 9)
+        pullIconView.autoresizingMask = [.flexibleTopMargin, .flexibleBottomMargin, .flexibleLeftMargin, .flexibleRightMargin]
+        
+        triggerView.addSubview(pullIconView)
+        
+        let border = UIView(frame: CGRect(x: 0, y: 0, width: 0, height: borderHeight))
+        border.backgroundColor = PalermColor.Dark100.UIColor
+        
+        let triggerViewWrapper = UIStackView()
+        triggerViewWrapper.axis = .vertical
+        triggerViewWrapper.distribution = .fill
+        triggerViewWrapper.translatesAutoresizingMaskIntoConstraints = false
+        triggerViewWrapper.heightAnchor.constraint(equalToConstant: triggerViewHeight + borderHeight).isActive = true
+        triggerViewWrapper.addArrangedSubview(border)
+        triggerViewWrapper.addArrangedSubview(triggerView)
+        
+        triggerViewWrapper.addGestureRecognizer(UITapGestureRecognizer(
+            target: self, action: #selector(self.tappedExpandTrigger(_:))
+        ))
+        
+        return AlermCardFoot(selfView: triggerViewWrapper, pullIcon: pullIconView)
+    }
+    
+    // 時間ラベルのStackリストを生成
+    private func generateTimeLabelsList(times: [String]) -> UIStackView {
+        var timeLabelStacks: [UIStackView] = []
+        var timeLabelStacksHeight: CGFloat = 0
+        var timeLabelStacksWidth: CGFloat = 0
+        let timeLabelStackCount = Int(ceil(Double(times.count) / Double(TIME_LABEL_MAX_COUNT_IN_ROW)))
+        for i in 0..<timeLabelStackCount {
+            let offset = i*TIME_LABEL_MAX_COUNT_IN_ROW
+            let tmpTimes = times.dropFirst(offset).prefix(TIME_LABEL_MAX_COUNT_IN_ROW)
+            let stackView = self.generateTimeLabelStack(times: tmpTimes.map{$0})
+            timeLabelStacks.append(stackView)
+            timeLabelStacksHeight += stackView.frame.height
+            if timeLabelStacksWidth < stackView.frame.width {
+                timeLabelStacksWidth = stackView.frame.width
+            }
+        }
+        let timeLabelStacksViewHeight = timeLabelStacksHeight+(CGFloat(timeLabelStacks.count-1)*CGFloat(TIME_LABEL_SPACE))
+        let timeLabelStacksView = UIStackView(frame: CGRect(x: 0, y: 200, width: timeLabelStacksWidth, height: timeLabelStacksViewHeight))
+        timeLabelStacksView.axis = .vertical
+        timeLabelStacksView.distribution = .fillEqually
+        timeLabelStacksView.spacing = CGFloat(TIME_LABEL_SPACE)
+        timeLabelStacksView.alignment = .leading
+        for stack in timeLabelStacks {
+            timeLabelStacksView.addArrangedSubview(stack)
+        }
+        return timeLabelStacksView
+    }
+    
+    // 時間ラベルの1行分のStackViewを生成
+    private func generateTimeLabelStack(times: [String]) -> UIStackView {
+        let rect = CGRect(x: 0, y: 0, width: 0, height: 0)
+        let stackView = UIStackView(frame: rect)
+        stackView.axis = .horizontal
+        stackView.distribution = .fillEqually
+        stackView.spacing = CGFloat(TIME_LABEL_SPACE)
+        var timeLabelsWidth: CGFloat = 0
+        var timeHeight: CGFloat = 0
+        times.forEach { time in
+            let timeLabel = self.generateTimeLabel(time: time)
+            timeLabelsWidth += timeLabel.frame.width
+            timeHeight = timeLabel.frame.height
+            stackView.addArrangedSubview(timeLabel)
+        }
+        let stackViewWidth = timeLabelsWidth+(CGFloat(TIME_LABEL_SPACE)*CGFloat(times.count-1))
+        stackView.frame.size = CGSize(width: stackViewWidth, height: timeHeight)
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        stackView.widthAnchor.constraint(equalToConstant: stackViewWidth).isActive = true
+        stackView.heightAnchor.constraint(equalToConstant: timeHeight).isActive = true
+        return stackView
+    }
+    
+    // 時間ラベルを生成
+    private func generateTimeLabel(time: String) -> UIView {
+        let label = TimeLabel(frame: CGRect(x: 0, y: 0, width: 0, height: 0))
+        label.backgroundColor = PalermColor.Dark200.UIColor
+        label.text = time
+        label.font = UIFont.systemFont(ofSize: 14)
+        label.textColor = .white
+        label.textAlignment = .center
+        label.sizeToFit()
+        label.layer.cornerRadius = 3
+        label.clipsToBounds = true
+        return label
+    }
+}
+
+// タッチイベント処理
+extension AlermCardGenerator {
+    @objc func tapped(_ sender: UILongPressGestureRecognizer) {
+        guard let delegate = self.delegate else { return }
+        delegate.tapped(sender)
+    }
+    
+    @objc func tappedExpandTrigger(_ sender: UITapGestureRecognizer) {
+        guard let delegate = self.delegate else { return }
+        delegate.tappedExpandTrigger(sender)
+    }
+}
+
+
+class TimeLabel: UILabel {
+    
+    @IBInspectable var padding: UIEdgeInsets = UIEdgeInsets(top: 4, left: 8, bottom: 4, right: 8)
+    
+    override func drawText(in rect: CGRect) {
+        rect.inset(by: padding)
+        super.drawText(in: rect)
+    }
+    
+    override func sizeThatFits(_ size: CGSize) -> CGSize {
+        var contentSize = super.intrinsicContentSize
+        contentSize.height += padding.top + padding.bottom
+        contentSize.width += padding.left + padding.right
+        return contentSize
+    }
+}
