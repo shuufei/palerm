@@ -26,7 +26,6 @@ final class AlermListViewController: UIViewController {
         tableView.dataSource = self
         setup()
         presenter.loadAlermList()
-//        setTestView()
     }
 
     func setup() {
@@ -43,14 +42,6 @@ final class AlermListViewController: UIViewController {
         tableView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor).isActive = true
         tableView.leftAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.leftAnchor).isActive = true
         tableView.rightAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.rightAnchor).isActive = true
-    }
-    
-    private func setTestView() {
-        let button = UIButton(frame: CGRect(x: 50, y: 50, width: 100, height: 50))
-        button.setTitle("ボタンだよ", for: .normal)
-        button.setTitleColor(.blue, for: .normal)
-        button.backgroundColor = .white
-        self.view.addSubview(button)
     }
 }
 

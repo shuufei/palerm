@@ -101,7 +101,7 @@ extension AlermListPresenter: AlermCardDelegate {
                 self.view.layoutIfNeededWithAnimation()
                 return
             }
-            let alermSettingViewController = UIStoryboard(name: "AlermSetting", bundle: nil).instantiateInitialViewController() as! AlermSettingViewController
+            let alermSettingViewController = AlermSettingViewController()
             self.view.presentToSetting(viewController: alermSettingViewController)
             topAnchor.constant = topAnchorInitValue
             self.view.layoutIfNeededWithAnimation()

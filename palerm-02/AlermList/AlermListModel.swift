@@ -33,7 +33,7 @@ class AlermListModel: AlermListModelProtocol {
     }
     
     func loadAlermListFromLocalCache() {
-//        localCache.setEncodableObject(forKey: "alerms", value: alermTestData)
+        localCache.setEncodableObject(forKey: "alerms", value: alermTestData)
         let data = localCache.getDecodableObject(forKey: "alerms") as Alerms?
         guard let alerms = data?.values else { return }
         self._alerms.accept(alerms)

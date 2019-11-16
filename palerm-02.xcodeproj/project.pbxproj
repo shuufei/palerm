@@ -24,7 +24,6 @@
 		C25629CA234F726200F00191 /* AlermListPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C25629C9234F726200F00191 /* AlermListPresenter.swift */; };
 		C25629CC234F749F00F00191 /* AlermListModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C25629CB234F749F00F00191 /* AlermListModel.swift */; };
 		C265E20423784145008C769D /* AlermCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = C265E20323784145008C769D /* AlermCard.swift */; };
-		C265E2072380500F008C769D /* AlermSetting.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C265E2062380500F008C769D /* AlermSetting.storyboard */; };
 		C265E20923805065008C769D /* AlermSettingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C265E20823805065008C769D /* AlermSettingViewController.swift */; };
 		EE9C407F2F8CC2100EB5FD22 /* Pods_palerm_02.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B7F71B8A9A2A4107BF08DA25 /* Pods_palerm_02.framework */; };
 /* End PBXBuildFile section */
@@ -76,7 +75,6 @@
 		C25629C9234F726200F00191 /* AlermListPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlermListPresenter.swift; sourceTree = "<group>"; };
 		C25629CB234F749F00F00191 /* AlermListModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlermListModel.swift; sourceTree = "<group>"; };
 		C265E20323784145008C769D /* AlermCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlermCard.swift; sourceTree = "<group>"; };
-		C265E2062380500F008C769D /* AlermSetting.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = AlermSetting.storyboard; sourceTree = "<group>"; };
 		C265E20823805065008C769D /* AlermSettingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlermSettingViewController.swift; sourceTree = "<group>"; };
 		C9484E9F2569F6C7D8881388 /* Pods-palerm-02Tests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-palerm-02Tests.debug.xcconfig"; path = "Target Support Files/Pods-palerm-02Tests/Pods-palerm-02Tests.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -219,7 +217,6 @@
 		C265E20523804FD5008C769D /* AlermSetting */ = {
 			isa = PBXGroup;
 			children = (
-				C265E2062380500F008C769D /* AlermSetting.storyboard */,
 				C265E20823805065008C769D /* AlermSettingViewController.swift */,
 			);
 			path = AlermSetting;
@@ -348,7 +345,6 @@
 				C25629C0234F63AE00F00191 /* AlermList.storyboard in Resources */,
 				C2562999234F5FD300F00191 /* LaunchScreen.storyboard in Resources */,
 				C2562996234F5FD300F00191 /* Assets.xcassets in Resources */,
-				C265E2072380500F008C769D /* AlermSetting.storyboard in Resources */,
 				C2562994234F5FD200F00191 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -682,7 +678,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 7A4PPWAY72;
 				INFOPLIST_FILE = "palerm-02/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 12.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.2;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -702,7 +698,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 7A4PPWAY72;
 				INFOPLIST_FILE = "palerm-02/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 12.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.2;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
