@@ -220,6 +220,8 @@ extension AlermCardGenerator {
     // 時間ごとにアラームのON／OFFを指定できるViewを生成
     private func generateTimeCell(time: String, width: CGFloat) -> UIStackView {
         let stackView = UIStackView(frame: CGRect(x: 0, y: 0, width: width, height: 54))
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        stackView.heightAnchor.constraint(lessThanOrEqualToConstant: 54).isActive = true
         stackView.axis = .horizontal
         stackView.distribution = .fill
         stackView.alignment = .center
@@ -232,11 +234,11 @@ extension AlermCardGenerator {
         timeLabel.sizeToFit()
         timeLabel.textAlignment = .left
         
-        let switcher = UISwitch(frame: CGRect(x: 0, y: 0, width: 0, height: 0))
+        let switcher = UISwitch()
         switcher.sizeToFit()
         
-        stackView.addSubview(timeLabel)
-        stackView.addSubview(switcher)
+        stackView.addArrangedSubview(timeLabel)
+        stackView.addArrangedSubview(switcher)
         stackView.isLayoutMarginsRelativeArrangement = true
         stackView.directionalLayoutMargins = NSDirectionalEdgeInsets(top: 0, leading: 16, bottom: 0, trailing: 16)
         
@@ -246,6 +248,8 @@ extension AlermCardGenerator {
         border.backgroundColor = PalermColor.Dark100.UIColor
         
         let cell = UIStackView(frame: CGRect(x: 0, y: 0, width: 0, height: 54.5))
+        cell.translatesAutoresizingMaskIntoConstraints = false
+        cell.heightAnchor.constraint(lessThanOrEqualToConstant: 54.5).isActive = true
         cell.axis = .vertical
         cell.distribution = .fill
         cell.addArrangedSubview(border)

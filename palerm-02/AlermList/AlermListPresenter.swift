@@ -17,6 +17,7 @@ protocol AlermListPresenterInput {
 
 protocol AlermListPresenterOutput: AnyObject {
     func resizeAlermCard(alermCard: AlermCard)
+    func layoutIfNeededWithAnimation()
 }
 
 final class AlermListPresenter: AlermListPresenterInput {
@@ -44,9 +45,11 @@ final class AlermListPresenter: AlermListPresenterInput {
                 var alermCard: AlermCard?
                 if times.count == 1 {
                     alermCard = self.alermCardGenerator.generate(time: times[0])
+                    alermCard!.head!.selfView.tag = index
                 } else {
                     alermCard = self.alermCardGenerator.generate(times: times)
                     alermCard!.foot!.selfView.tag = index
+                    alermCard!.head!.selfView.tag = index
                 }
                 self._alermCardList.append(alermCard!)
             }
@@ -61,11 +64,52 @@ final class AlermListPresenter: AlermListPresenterInput {
 
 extension AlermListPresenter: AlermCardDelegate {
     func tapped(_ sender: UILongPressGestureRecognizer) {
-        print("--- tapped in alerm list presenter")
+        guard let alermCardIndex = sender.view?.tag else { return }
+        guard
+            let topAnchor = self.alermCardList[alermCardIndex].topAnchor,
+            let topAnchorInitValue = self.alermCardList[alermCardIndex].topAnchorInitValue
+        else { return }
+        
+        let switcher = self.alermCardList[alermCardIndex].head?.switcher ?? nil
+        let beforeNavigateMoveHeight: CGFloat = 3
+        
+        var isTappedSwitcher = false
+        if switcher != nil {
+            let switcherSize = switcher!.frame.size
+            let point = sender.location(in: switcher)
+            isTappedSwitcher = (
+                -10 <= point.x &&
+                -10 <= point.y &&
+                point.x <= switcherSize.width + 10 &&
+                point.y <= switcherSize.height + 10
+            )
+        }
+
+        switch sender.state {
+        case .began:
+            if isTappedSwitcher { return }
+            topAnchor.constant += beforeNavigateMoveHeight
+            self.view.layoutIfNeededWithAnimation()
+            break
+        case .ended:
+            if isTappedSwitcher {
+                switcher!.setOn(!switcher!.isOn, animated: true)
+                let impactGenerator = UIImpactFeedbackGenerator(style: .light)
+                impactGenerator.impactOccurred()
+                topAnchor.constant = topAnchorInitValue
+                self.view.layoutIfNeededWithAnimation()
+                return
+            }
+            topAnchor.constant = topAnchorInitValue
+            self.view.layoutIfNeededWithAnimation()
+            break
+        default:
+            return
+        }
     }
     
     func tappedExpandTrigger(_ sender: UITapGestureRecognizer) {
         guard let index = sender.view?.tag else { return }
-        self.view.resizeAlermCard(alermCard: self.alermCardList[index]) 
+        self.view.resizeAlermCard(alermCard: self.alermCardList[index])
     }
 }

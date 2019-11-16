@@ -195,6 +195,11 @@ extension AlermListViewController: AlermListPresenterOutput {
             },
             completion: nil
         )
-        
+    }
+    
+    func layoutIfNeededWithAnimation() {
+        UIView.animate(withDuration: 0.2, animations: {
+            self.view.layoutIfNeeded()
+        })
     }
 }
