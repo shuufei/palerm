@@ -94,9 +94,7 @@ extension AlermListPresenter: AlermCardDelegate {
             break
         case .ended:
             if isTappedSwitcher {
-                switcher!.setOn(!switcher!.isOn, animated: true)
-                let impactGenerator = UIImpactFeedbackGenerator(style: .light)
-                impactGenerator.impactOccurred()
+                self.switchAlerms(alermCard: self.alermCardList[alermCardIndex])
                 topAnchor.constant = topAnchorInitValue
                 self.view.layoutIfNeededWithAnimation()
                 return
@@ -114,5 +112,17 @@ extension AlermListPresenter: AlermCardDelegate {
     func tappedExpandTrigger(_ sender: UITapGestureRecognizer) {
         guard let index = sender.view?.tag else { return }
         self.view.resizeAlermCard(alermCard: self.alermCardList[index])
+    }
+    
+    func switchAlerms(alermCard: AlermCard) {
+        guard let switcher = alermCard.head?.switcher else { return }
+        let newState = !switcher.isOn
+        switcher.setOn(newState, animated: true)
+        let impactGenerator = UIImpactFeedbackGenerator(style: .light)
+        impactGenerator.impactOccurred()
+        guard let alermStateList = alermCard.alermTimeCellList?.alermStateList else { return }
+        for alermState in alermStateList {
+            alermState.switcher.setOn(newState, animated: true)
+        }
     }
 }

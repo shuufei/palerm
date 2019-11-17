@@ -22,6 +22,7 @@ struct AlermCardTimeCellList {
     let selfView: UIStackView
     var height: CGFloat? = nil
     var heightConstraints: NSLayoutConstraint? = nil
+    let alermStateList: [AlermState]
     
     mutating func setHeight(_ height: CGFloat) {
         self.height = height
@@ -39,6 +40,11 @@ struct AlermCardFoot {
     mutating func setPullIcon(_ pullIcon: UIImageView) {
         self.pullIcon = pullIcon
     }
+}
+
+struct AlermState {
+    let time: String
+    let switcher: UISwitch
 }
 
 class AlermCard {
@@ -195,11 +201,13 @@ extension AlermCardGenerator {
     private func generateAlermCardExpandView(times: [String], width: CGFloat) -> AlermCardTimeCellList {
         var cells: [UIStackView] = []
         var cellHeight: CGFloat = 0
+        var alermStateList: [AlermState] = []
         
         for time in times {
-            let cell = self.generateTimeCell(time: time, width: width)
+            let (cell, alermState) = self.generateTimeCell(time: time, width: width)
             cells.append(cell)
             cellHeight += cell.frame.height
+            alermStateList.append(alermState)
         }
         
         let timeCellsWrapper = UIStackView(frame: CGRect(x: 0, y: 0, width: 0, height: cellHeight))
@@ -214,11 +222,11 @@ extension AlermCardGenerator {
         let timeCellsWrapperHeightConstraints = timeCellsWrapper.heightAnchor.constraint(equalToConstant: 0)
         timeCellsWrapperHeightConstraints.isActive = true
         
-        return AlermCardTimeCellList(selfView: timeCellsWrapper, height: cellHeight, heightConstraints: timeCellsWrapperHeightConstraints)
+        return AlermCardTimeCellList(selfView: timeCellsWrapper, height: cellHeight, heightConstraints: timeCellsWrapperHeightConstraints, alermStateList: alermStateList)
     }
 
     // 時間ごとにアラームのON／OFFを指定できるViewを生成
-    private func generateTimeCell(time: String, width: CGFloat) -> UIStackView {
+    private func generateTimeCell(time: String, width: CGFloat) -> (cell: UIStackView, alermState: AlermState) {
         let stackView = UIStackView(frame: CGRect(x: 0, y: 0, width: width, height: 54))
         stackView.translatesAutoresizingMaskIntoConstraints = false
         stackView.heightAnchor.constraint(lessThanOrEqualToConstant: 54).isActive = true
@@ -255,7 +263,7 @@ extension AlermCardGenerator {
         cell.addArrangedSubview(border)
         cell.addArrangedSubview(stackView)
         
-        return cell
+        return (cell: cell, alermState: AlermState(time: time, switcher: switcher))
     }
 
     // 拡縮を制御するためのViewを生成
