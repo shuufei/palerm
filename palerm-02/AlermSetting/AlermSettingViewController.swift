@@ -9,19 +9,22 @@
 import UIKit
 
 class AlermSettingViewController: UIViewController {
-    var navBar: UINavigationBar;
-    var scrollView: UIScrollView;
-    var hoursView: UIScrollView;
+    var navBar: UINavigationBar
+    var scrollView: UIScrollView
+    var hoursView: UIScrollView
+    var minutesView: UIView
     
     private var hourButtonList: [CircleCustomButton] = []
+    private var minutesButtonList: [CircleCustomButton] = []
     
     private var scrollViewContentsHeight: CGFloat = 0
     private var currentHour: String = "00"
     
     init() {
-        self.navBar = UINavigationBar(frame: CGRect(x: 0, y: 0, width: 0, height: 44))
+        self.navBar = UINavigationBar(frame: CGRect(x: 0, y: 0, width: 0, height: 56))
         self.scrollView = UIScrollView()
         self.hoursView = UIScrollView()
+        self.minutesView = UIView()
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -39,18 +42,24 @@ class AlermSettingViewController: UIViewController {
         self.setNavBar()
         self.setScrollView()
         self.setHoursView()
+        self.setMinutesView()
+        self.setLoopView()
         
         self.scrollViewContentsHeight += 48
         self.scrollView.contentSize = CGSize(width: self.view.frame.width, height: self.scrollViewContentsHeight)
     }
     
     private func setNavBar() {
-        self.navBar.barStyle = .black
+        self.navBar.barStyle = .default
+        self.navBar.barTintColor = PalermColor.Dark500.UIColor
+        self.navBar.isTranslucent = false
 
         let navItem = UINavigationItem()
         let doneItem = UIBarButtonItem(title: "完了", style: .done, target: nil, action: nil)
+        doneItem.tintColor = .white
         let cancelItem = UIBarButtonItem(title: "キャンセル", style: .plain, target: nil, action: nil)
         cancelItem.action = #selector(self.cancel(_:))
+        cancelItem.tintColor = .white
         navItem.rightBarButtonItem = doneItem
         navItem.leftBarButtonItem = cancelItem
         self.navBar.setItems([navItem], animated: false)
@@ -72,19 +81,7 @@ class AlermSettingViewController: UIViewController {
         self.scrollView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor).isActive = true
     }
     
-    private func generateCircleCustomButton() {
-        
-    }
-    
-    private func setMinutesView() {
-        
-    }
-    
     private func setLabelsView() {
-        
-    }
-    
-    private func setLoopView() {
         
     }
     
@@ -205,6 +202,105 @@ extension AlermSettingViewController {
 
 }
 
+// 分選択Viewの表示処理
+extension AlermSettingViewController {
+    private func setMinutesView() {
+        self.setMinutesTitle()
+
+        let blockSize: CGFloat = 337
+        let holeSize: CGFloat = 197
+        self.minutesView = self.setAndGetMinutesBlock(blockSize: blockSize, holeSize: holeSize)
+        
+        let blockSizeHalf = blockSize / CGFloat(2)
+        let holeSizeHalf = holeSize / CGFloat(2)
+        
+        let r: CGFloat = (
+            ((blockSizeHalf - holeSizeHalf) / CGFloat(2))
+            + holeSizeHalf
+        )
+        // 中心からの座標
+        let points: [CGPoint] = [
+            CGPoint(x: 0, y: -r),
+            CGPoint(x: r/2, y: -CGFloat(sqrt(3)/2)*r),
+            CGPoint(x: CGFloat(sqrt(3)/2)*r, y: -r/2),
+            CGPoint(x: r, y: 0),
+            CGPoint(x: CGFloat(sqrt(3)/2)*r, y: r/2),
+            CGPoint(x: r/2, y: CGFloat(sqrt(3)/2)*r),
+            CGPoint(x: 0, y: r),
+            CGPoint(x: -r/2, y: CGFloat(sqrt(3)/2)*r),
+            CGPoint(x: -CGFloat(sqrt(3)/2)*r, y: r/2),
+            CGPoint(x: -r, y: 0),
+            CGPoint(x: -CGFloat(sqrt(3)/2)*r, y: -r/2),
+            CGPoint(x: -r/2, y: -CGFloat(sqrt(3)/2)*r)
+        ]
+        
+        for (index, point) in points.enumerated() {
+            let minuteButton = CircleCustomButton(
+                size: 50,
+                color: PalermColor.Dark500.UIColor,
+                label: String(format: "%02d", index * 5),
+                type: .Minute
+            )
+            self.minutesButtonList.append(minuteButton)
+            let cPoint = self.minutesView.convert(point, from: self.scrollView)
+            minuteButton.addGestureRecognizer(
+                UITapGestureRecognizer(target: self, action: #selector(self.tappedMinuteButton(_:)))
+            )
+            minuteButton.center = cPoint
+            self.minutesView.addSubview(minuteButton)
+        }
+        self.scrollViewContentsHeight += self.minutesView.frame.height + 32
+    }
+    
+    private func setMinutesTitle() {
+        let label = self.generateViewCategoryLabel(category: "分")
+        self.scrollView.addSubview(label)
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.topAnchor.constraint(equalTo: self.hoursView.bottomAnchor, constant: 32).isActive = true
+        label.leadingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.leadingAnchor, constant: 16).isActive = true
+    }
+    
+    private func setAndGetMinutesBlock(blockSize: CGFloat, holeSize: CGFloat) -> UIView {
+        let minutesSelectBlock = UIView()
+        minutesSelectBlock.translatesAutoresizingMaskIntoConstraints = false
+        minutesSelectBlock.widthAnchor.constraint(equalToConstant: blockSize).isActive = true
+        minutesSelectBlock.heightAnchor.constraint(equalToConstant: blockSize).isActive = true
+        minutesSelectBlock.backgroundColor = PalermColor.Dark100.UIColor
+        minutesSelectBlock.layer.cornerRadius = CGFloat(blockSize / 2)
+        self.scrollView.addSubview(minutesSelectBlock)
+        minutesSelectBlock.topAnchor.constraint(equalTo: self.hoursView.bottomAnchor, constant: 32).isActive = true
+        minutesSelectBlock.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
+
+        let minutesSelectBlockHole = UIView()
+        minutesSelectBlockHole.translatesAutoresizingMaskIntoConstraints = false
+        minutesSelectBlockHole.widthAnchor.constraint(equalToConstant: holeSize).isActive = true
+        minutesSelectBlockHole.heightAnchor.constraint(equalToConstant: holeSize).isActive = true
+        minutesSelectBlockHole.backgroundColor = PalermColor.Dark500.UIColor
+        minutesSelectBlockHole.layer.cornerRadius = CGFloat(holeSize / 2)
+        minutesSelectBlock.addSubview(minutesSelectBlockHole)
+        minutesSelectBlockHole.centerXAnchor.constraint(equalTo: minutesSelectBlock.centerXAnchor).isActive = true
+        minutesSelectBlockHole.centerYAnchor.constraint(equalTo: minutesSelectBlock.centerYAnchor).isActive = true
+        minutesSelectBlock.layoutIfNeeded()
+        
+        return minutesSelectBlock
+    }
+}
+
+// くり返し選択Viewの表示処理
+extension AlermSettingViewController {
+    private func setLoopView() {
+        
+    }
+    
+    private func setAndGetLoopTitle() -> UILabel {
+        let label = self.generateViewCategoryLabel(category: "繰り返し")
+        self.scrollView.addSubview(label)
+        label.translatesAutoresizingMaskIntoConstraints = false
+//        label.topAnchor.constraint(equalTo: self., constant: )
+        return label
+    }
+}
+
 extension AlermSettingViewController {
     @objc func cancel(_ sender: UIButton) {
         self.dismiss(animated: true, completion: nil)
@@ -212,5 +308,9 @@ extension AlermSettingViewController {
     
     @objc private func tappedHourButton(_ sender: UITapGestureRecognizer) {
         print("--- tapped hour button")
+    }
+    
+    @objc private func tappedMinuteButton(_ sender: UITapGestureRecognizer) {
+        print("--- tapped minutes button")
     }
 }
