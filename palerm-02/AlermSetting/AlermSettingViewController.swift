@@ -13,9 +13,12 @@ class AlermSettingViewController: UIViewController {
     var scrollView: UIScrollView
     var hoursView: UIScrollView
     var minutesView: UIView
+    var labelsView: UIStackView
+    var loopView: UIScrollView
     
     private var hourButtonList: [CircleCustomButton] = []
     private var minutesButtonList: [CircleCustomButton] = []
+    private var weekButtonList: [CircleCustomButton] = []
     
     private var scrollViewContentsHeight: CGFloat = 0
     private var currentHour: String = "00"
@@ -25,6 +28,8 @@ class AlermSettingViewController: UIViewController {
         self.scrollView = UIScrollView()
         self.hoursView = UIScrollView()
         self.minutesView = UIView()
+        self.labelsView = UIStackView()
+        self.loopView = UIScrollView()
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -43,8 +48,10 @@ class AlermSettingViewController: UIViewController {
         self.setScrollView()
         self.setHoursView()
         self.setMinutesView()
+        self.setLabelsView()
         self.setLoopView()
-        
+        self.setSettingCells()
+
         self.scrollViewContentsHeight += 48
         self.scrollView.contentSize = CGSize(width: self.view.frame.width, height: self.scrollViewContentsHeight)
     }
@@ -79,10 +86,6 @@ class AlermSettingViewController: UIViewController {
         self.scrollView.leadingAnchor.constraint(equalTo: self.navBar.leadingAnchor).isActive = true
         self.scrollView.trailingAnchor.constraint(equalTo: self.navBar.trailingAnchor).isActive = true
         self.scrollView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor).isActive = true
-    }
-    
-    private func setLabelsView() {
-        
     }
     
     private func generateViewCategoryLabel(category: String) -> UILabel {
@@ -286,18 +289,177 @@ extension AlermSettingViewController {
     }
 }
 
+// 設定されている時間のラベルViewの表示処理
+extension AlermSettingViewController {
+    private func setLabelsView() {
+        self.labelsView.axis = .vertical
+        self.labelsView.distribution = .fillEqually
+        self.labelsView.alignment = .leading
+        self.labelsView.spacing = 8
+        
+        self.scrollView.addSubview(self.labelsView)
+        self.labelsView.translatesAutoresizingMaskIntoConstraints = false
+        self.labelsView.topAnchor.constraint(equalTo: self.minutesView.bottomAnchor, constant: 16).isActive = true
+        self.labelsView.leadingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.leadingAnchor, constant: 24).isActive = true
+        self.labelsView.trailingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.trailingAnchor, constant: -24).isActive = true
+        
+        self.scrollViewContentsHeight += self.labelsView.frame.height
+    }
+}
+
+
 // くり返し選択Viewの表示処理
 extension AlermSettingViewController {
     private func setLoopView() {
+        let label = self.setAndGetLoopTitle()
+        self.loopView.contentOffset = CGPoint(x: 0, y: 0)
+        self.loopView.showsHorizontalScrollIndicator = false
         
+        self.scrollView.addSubview(self.loopView)
+        self.loopView.translatesAutoresizingMaskIntoConstraints = false
+        self.loopView.heightAnchor.constraint(equalToConstant: 60).isActive = true
+        self.loopView.leadingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.leadingAnchor).isActive = true
+        self.loopView.trailingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.trailingAnchor).isActive = true
+        self.loopView.topAnchor.constraint(equalTo: label.bottomAnchor, constant: 12).isActive = true
+        
+        let loopStack = self.generateLoopStack()
+        self.loopView.addSubview(loopStack)
+        self.view.layoutIfNeeded()
+        self.scrollViewContentsHeight += self.loopView.frame.height + 12
     }
     
     private func setAndGetLoopTitle() -> UILabel {
+        let verticalMargin: CGFloat = 16
         let label = self.generateViewCategoryLabel(category: "繰り返し")
         self.scrollView.addSubview(label)
         label.translatesAutoresizingMaskIntoConstraints = false
-//        label.topAnchor.constraint(equalTo: self., constant: )
+        label.topAnchor.constraint(equalTo: self.labelsView.bottomAnchor, constant: verticalMargin).isActive = true
+        label.leadingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.leadingAnchor, constant: 16).isActive = true
+        self.scrollViewContentsHeight += label.frame.height + (verticalMargin * 2)
         return label
+    }
+    
+    private func generateLoopStack() -> UIStackView {
+        let stack = UIStackView()
+        stack.axis = .horizontal
+        stack.addBackground(PalermColor.Dark500.UIColor)
+        stack.distribution = .fillEqually
+        stack.spacing = 8
+
+        let weekStrings = [
+            "日", "月", "火", "水", "木", "金", "土"
+        ]
+        let weekButtonSize: CGFloat = 48
+        for week in weekStrings {
+            let button = CircleCustomButton(
+                size: weekButtonSize,
+                color: PalermColor.Dark100.UIColor,
+                label: week,
+                type: .Week
+            )
+            button.addGestureRecognizer(
+                UITapGestureRecognizer(target: self, action: #selector(self.tappedWeekButton(_:)))
+            )
+            self.weekButtonList.append(button)
+            stack.addArrangedSubview(button)
+        }
+        
+        let stackWidth = (
+            CGFloat(self.weekButtonList.count) * weekButtonSize
+            + (CGFloat(self.weekButtonList.count - 1) * stack.spacing)
+        )
+        stack.frame = CGRect(x: 12, y: 0, width: stackWidth, height: weekButtonSize)
+        return stack
+    }
+}
+
+// その他設定Viewの表示処理
+extension AlermSettingViewController {
+    private func setSettingCells() {
+        let borderHeight: CGFloat = 0.5
+        
+        let topBorder = self.generateSeparateBorder()
+        self.setSettignCellConstraints(target: topBorder, topAnchorTarget: self.loopView.bottomAnchor, topMargin: 24, height: borderHeight)
+        
+        let soundSettingCell = self.generateSoundSettingCell()
+        self.setSettignCellConstraints(target: soundSettingCell, topAnchorTarget: topBorder.bottomAnchor, topMargin: 0, height: 44)
+
+        let cellSeparateBorder = self.setAndGetCellSeparateBorder(topAnchorTarget: soundSettingCell.bottomAnchor, topMargin: 0, height: borderHeight)
+        
+        let snoozeSettingCell = self.generateSnoozeSettingCell()
+        self.setSettignCellConstraints(target: snoozeSettingCell, topAnchorTarget: cellSeparateBorder.bottomAnchor, topMargin: 0, height: 48)
+        
+        let bottomBorder = self.generateSeparateBorder()
+        self.setSettignCellConstraints(target: bottomBorder, topAnchorTarget: snoozeSettingCell.bottomAnchor, topMargin: 0, height: borderHeight)
+        
+        let deleteCellTopBorder = self.generateSeparateBorder()
+        self.setSettignCellConstraints(target: deleteCellTopBorder, topAnchorTarget: bottomBorder.bottomAnchor, topMargin: 32, height: borderHeight)
+        
+        let deleteCell = self.generateDeleteCell()
+        self.setSettignCellConstraints(target: deleteCell, topAnchorTarget: deleteCellTopBorder.bottomAnchor, topMargin: 0, height: 44)
+        
+        let deleteCellBottomBorder = self.generateSeparateBorder()
+        self.setSettignCellConstraints(target: deleteCellBottomBorder, topAnchorTarget: deleteCell.bottomAnchor, topMargin: 0, height: borderHeight)
+    }
+    
+    private func setSettignCellConstraints(target: UIView, topAnchorTarget: NSLayoutYAxisAnchor, topMargin: CGFloat, height: CGFloat) {
+        self.scrollView.addSubview(target)
+        target.translatesAutoresizingMaskIntoConstraints = false
+        target.topAnchor.constraint(equalTo: topAnchorTarget, constant: topMargin).isActive = true
+        target.leadingAnchor.constraint(equalTo: self.view.leadingAnchor).isActive = true
+        target.trailingAnchor.constraint(equalTo: self.view.trailingAnchor).isActive = true
+        target.heightAnchor.constraint(equalToConstant: height).isActive = true
+        self.scrollViewContentsHeight += height + topMargin
+    }
+    
+    private func generateSeparateBorder() -> UIView {
+        let border = UIView()
+        border.backgroundColor = UIColor(hexString: "404040")
+        return border
+    }
+    
+    private func setAndGetCellSeparateBorder(topAnchorTarget: NSLayoutYAxisAnchor, topMargin: CGFloat, height: CGFloat) -> UIView {
+        let border = self.generateSeparateBorder()
+        border.backgroundColor = PalermColor.Dark300.UIColor
+        self.setSettignCellConstraints(target: border, topAnchorTarget: topAnchorTarget, topMargin: topMargin, height: height)
+        let innerBorder = self.generateSeparateBorder()
+        border.addSubview(innerBorder)
+        innerBorder.translatesAutoresizingMaskIntoConstraints = false
+        innerBorder.topAnchor.constraint(equalTo: border.topAnchor).isActive = true
+        innerBorder.leadingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.leadingAnchor, constant: 16).isActive = true
+        innerBorder.trailingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.trailingAnchor).isActive = true
+        innerBorder.heightAnchor.constraint(equalToConstant: height).isActive = true
+        return border
+    }
+    
+    private func generateSoundSettingCell() -> UITableViewCell {
+        let cell = UITableViewCell(style: .value1, reuseIdentifier: "sound")
+        cell.accessoryType = .disclosureIndicator
+        cell.backgroundColor = PalermColor.Dark300.UIColor
+        cell.textLabel?.text = "サウンド"
+        cell.textLabel?.textColor = UIColor(hexString: "efefef")
+        cell.detailTextLabel?.text = "alerm"
+        cell.detailTextLabel?.textColor = UIColor(hexString: "8E8E93")
+        return cell
+    }
+    
+    private func generateSnoozeSettingCell() -> UITableViewCell {
+        let cell = UITableViewCell(style: .value1, reuseIdentifier: "snooze")
+        cell.backgroundColor = PalermColor.Dark300.UIColor
+        cell.accessoryView = UISwitch()
+        cell.selectionStyle = .none
+        cell.textLabel?.text = "スヌーズ"
+        cell.textLabel?.textColor = UIColor(hexString: "efefef")
+        return cell
+    }
+    
+    private func generateDeleteCell() -> UITableViewCell {
+        let cell = UITableViewCell(style: .default, reuseIdentifier: "delete")
+        cell.backgroundColor = PalermColor.Dark300.UIColor
+        cell.textLabel?.text = "アラームを削除"
+        cell.textLabel?.textColor = .red
+        cell.textLabel?.textAlignment = .center
+        return cell
     }
 }
 
@@ -312,5 +474,9 @@ extension AlermSettingViewController {
     
     @objc private func tappedMinuteButton(_ sender: UITapGestureRecognizer) {
         print("--- tapped minutes button")
+    }
+    
+    @objc private func tappedWeekButton(_ sender: UITapGestureRecognizer) {
+        print("--- tapped week button")
     }
 }
