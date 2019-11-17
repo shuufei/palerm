@@ -25,6 +25,7 @@
 		C25629CC234F749F00F00191 /* AlermListModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C25629CB234F749F00F00191 /* AlermListModel.swift */; };
 		C265E20423784145008C769D /* AlermCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = C265E20323784145008C769D /* AlermCard.swift */; };
 		C265E20923805065008C769D /* AlermSettingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C265E20823805065008C769D /* AlermSettingViewController.swift */; };
+		C2C4CF09238126AA006D3FD3 /* CircleCustomButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2C4CF08238126AA006D3FD3 /* CircleCustomButton.swift */; };
 		EE9C407F2F8CC2100EB5FD22 /* Pods_palerm_02.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B7F71B8A9A2A4107BF08DA25 /* Pods_palerm_02.framework */; };
 /* End PBXBuildFile section */
 
@@ -76,6 +77,7 @@
 		C25629CB234F749F00F00191 /* AlermListModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlermListModel.swift; sourceTree = "<group>"; };
 		C265E20323784145008C769D /* AlermCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlermCard.swift; sourceTree = "<group>"; };
 		C265E20823805065008C769D /* AlermSettingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlermSettingViewController.swift; sourceTree = "<group>"; };
+		C2C4CF08238126AA006D3FD3 /* CircleCustomButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircleCustomButton.swift; sourceTree = "<group>"; };
 		C9484E9F2569F6C7D8881388 /* Pods-palerm-02Tests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-palerm-02Tests.debug.xcconfig"; path = "Target Support Files/Pods-palerm-02Tests/Pods-palerm-02Tests.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -218,6 +220,7 @@
 			isa = PBXGroup;
 			children = (
 				C265E20823805065008C769D /* AlermSettingViewController.swift */,
+				C2C4CF08238126AA006D3FD3 /* CircleCustomButton.swift */,
 			);
 			path = AlermSetting;
 			sourceTree = "<group>";
@@ -496,6 +499,7 @@
 				C2562991234F5FD200F00191 /* ViewController.swift in Sources */,
 				C25629C3234F666800F00191 /* Color.swift in Sources */,
 				C256298F234F5FD200F00191 /* AppDelegate.swift in Sources */,
+				C2C4CF09238126AA006D3FD3 /* CircleCustomButton.swift in Sources */,
 				C25629CC234F749F00F00191 /* AlermListModel.swift in Sources */,
 				C265E20423784145008C769D /* AlermCard.swift in Sources */,
 				C25629BE234F633F00F00191 /* AlermListViewController.swift in Sources */,
