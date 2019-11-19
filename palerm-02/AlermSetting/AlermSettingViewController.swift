@@ -8,20 +8,43 @@
 
 import UIKit
 
-class AlermSettingViewController: UIViewController {
-    var navBar: UINavigationBar
-    var scrollView: UIScrollView
-    var hoursView: UIScrollView
-    var minutesView: UIView
-    var labelsView: UIStackView
-    var loopView: UIScrollView
+struct AlermTime {
+    let hour: String
+    let min: String
     
+    var time: String {
+        get {
+            return "\(self.hour):\(self.min)"
+        }
+    }
+    
+    var priority: Int {
+        get {
+            return Int("\(self.hour)\(self.min)")!
+        }
+    }
+}
+
+class AlermSettingViewController: UIViewController {
+    public var alermTimeList: [AlermTime] = []
+    public var weekList: [String] = []
+    
+    private var navBar: UINavigationBar
+    private var scrollView: UIScrollView
+    private var hoursView: UIScrollView
+    private var minutesView: UIView
+    private var labelsView: UIStackView
+    private var labelsViewHeightConstraint: NSLayoutConstraint
+    private var loopView: UIScrollView
+
     private var hourButtonList: [CircleCustomButton] = []
     private var minutesButtonList: [CircleCustomButton] = []
     private var weekButtonList: [CircleCustomButton] = []
     
     private var scrollViewContentsHeight: CGFloat = 0
     private var currentHour: String = "00"
+    private var selectingHour: String? = nil
+    private var alermTimeLabelStackList: [UIStackView] = []
     
     init() {
         self.navBar = UINavigationBar(frame: CGRect(x: 0, y: 0, width: 0, height: 56))
@@ -29,6 +52,7 @@ class AlermSettingViewController: UIViewController {
         self.hoursView = UIScrollView()
         self.minutesView = UIView()
         self.labelsView = UIStackView()
+        self.labelsViewHeightConstraint = NSLayoutConstraint()
         self.loopView = UIScrollView()
         super.init(nibName: nil, bundle: nil)
     }
@@ -96,6 +120,23 @@ class AlermSettingViewController: UIViewController {
         label.sizeToFit()
         return label
     }
+
+    private func appendAlermTime(alermTime: AlermTime) -> Bool {
+        self.alermTimeList.append(alermTime)
+        self.alermTimeList.sort { $0.priority < $1.priority }
+        return true
+    }
+
+    private func removeAlermTime(hour: String, min: String) -> Bool {
+        for (index, alermTime) in self.alermTimeList.enumerated() {
+            if alermTime.hour == hour, alermTime.min == min {
+                self.alermTimeList.remove(at: index)
+                return true
+            }
+        }
+        return false
+    }
+
 }
 
 // 時間選択Viewの表示処理
@@ -130,7 +171,7 @@ extension AlermSettingViewController {
         self.scrollView.addSubview(label)
         label.translatesAutoresizingMaskIntoConstraints = false
         let topMargin: CGFloat = 24
-        label.topAnchor.constraint(equalTo: self.scrollView.bottomAnchor, constant: topMargin).isActive = true
+        label.topAnchor.constraint(equalTo: self.scrollView.topAnchor, constant: topMargin).isActive = true
         label.leadingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.leadingAnchor, constant: 16).isActive = true
         self.scrollViewContentsHeight += topMargin + label.frame.height
         return label
@@ -164,6 +205,7 @@ extension AlermSettingViewController {
         let format = DateFormatter()
         format.dateFormat = DateFormatter.dateFormat(fromTemplate: "H", options: 0, locale: .current)
         self.currentHour = format.string(from: Date())
+        self.selectingHour = self.currentHour
     }
     
     private func setHourOffset(buttonSize: CGFloat, buttonSpacing: CGFloat, sidePadding: CGFloat) {
@@ -302,11 +344,80 @@ extension AlermSettingViewController {
         self.labelsView.topAnchor.constraint(equalTo: self.minutesView.bottomAnchor, constant: 16).isActive = true
         self.labelsView.leadingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.leadingAnchor, constant: 24).isActive = true
         self.labelsView.trailingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.trailingAnchor, constant: -24).isActive = true
+        self.labelsViewHeightConstraint = self.labelsView.heightAnchor.constraint(equalToConstant: 0)
+        self.labelsViewHeightConstraint.isActive = true
         
         self.scrollViewContentsHeight += self.labelsView.frame.height
     }
+    
+    private func setAlermTimeLabels() {
+        for stack in self.alermTimeLabelStackList { stack.removeFromSuperview() }
+        let maxLabelsInStackCount = 3
+        let safeAreaWidth = self.view.frame.width - self.view.safeAreaInsets.left - self.view.safeAreaInsets.right
+        let alermTimeLabelStackCount = Int(ceil(
+            Double(self.alermTimeList.count) / Double(maxLabelsInStackCount)
+        ))
+        let alermTimeLabelHeight: CGFloat = 36
+        let labelsViewHeight = (
+            (alermTimeLabelHeight * CGFloat(alermTimeLabelStackCount))
+            + (self.labelsView.spacing * CGFloat(alermTimeLabelStackCount - 1))
+        )
+        self.labelsViewHeightConstraint.constant = labelsViewHeight
+        for i in 0..<alermTimeLabelStackCount {
+            let offset = i * maxLabelsInStackCount
+            let alermTimeListInStack = self.alermTimeList.dropFirst(offset).prefix(maxLabelsInStackCount)
+            let sidePadding: CGFloat = 24
+            let stack = UIStackView()
+            stack.axis = .horizontal
+            stack.distribution = .equalSpacing
+            stack.spacing = 8
+            let alermTimeLabelWidth = (
+                safeAreaWidth
+                - CGFloat(sidePadding * 2)
+                - CGFloat(stack.spacing * CGFloat(maxLabelsInStackCount - 1))
+            ) / 3
+            for (index, alermTime) in alermTimeListInStack.enumerated() {
+                let labelText = UILabel(frame: CGRect(x: 12, y: 9, width: 0, height: 0))
+                labelText.text = alermTime.time
+                labelText.font = UIFont.systemFont(ofSize: 16)
+                labelText.textColor = UIColor(hexString: "efefef")
+                labelText.sizeToFit()
+                
+                let alermTimeLabel = UIView()
+                alermTimeLabel.backgroundColor = UIColor(hexString: "3f3f3f")
+                alermTimeLabel.heightAnchor.constraint(equalToConstant: alermTimeLabelHeight).isActive = true
+                alermTimeLabel.widthAnchor.constraint(equalToConstant: alermTimeLabelWidth).isActive = true
+                
+                let clearButton = self.generateAlermTimeLabelClearButton()
+                clearButton.frame.origin = CGPoint(x: alermTimeLabelWidth - clearButton.frame.width, y: 0)
+                clearButton.tag = offset + index
+                
+                alermTimeLabel.layer.cornerRadius = 18
+                alermTimeLabel.addSubview(labelText)
+                alermTimeLabel.addSubview(clearButton)
+                
+                stack.addArrangedSubview(alermTimeLabel)
+            }
+            self.labelsView.addArrangedSubview(stack)
+            self.alermTimeLabelStackList.append(stack)
+        }
+        self.view.layoutIfNeeded()
+        self.scrollView.contentSize = CGSize(
+            width: self.view.frame.width,
+            height: self.scrollViewContentsHeight + self.labelsView.frame.height
+        )
+    }
+    
+    private func generateAlermTimeLabelClearButton() -> UIView {
+        let clearIcon = UIImage(named: "clear")
+        let clearView = UIImageView(image: clearIcon)
+        clearView.frame = CGRect(x: 12, y: 12, width: 12, height: 12)
+        let clearWrapper = UIView(frame: CGRect(x: 0, y: 0, width: 36, height: 36))
+        clearWrapper.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(self.clearAlermTime(_:))))
+        clearWrapper.addSubview(clearView)
+        return clearWrapper
+    }
 }
-
 
 // くり返し選択Viewの表示処理
 extension AlermSettingViewController {
@@ -408,7 +519,10 @@ extension AlermSettingViewController {
         target.topAnchor.constraint(equalTo: topAnchorTarget, constant: topMargin).isActive = true
         target.leadingAnchor.constraint(equalTo: self.view.leadingAnchor).isActive = true
         target.trailingAnchor.constraint(equalTo: self.view.trailingAnchor).isActive = true
-        target.heightAnchor.constraint(equalToConstant: height).isActive = true
+        let heightConstraint = target.heightAnchor.constraint(equalToConstant: height)
+        heightConstraint.isActive = true
+        // tableViewCellだとUIView-Encapsulated-Layout-Heightが優先されるので、それよりも優先度を上げる
+        heightConstraint.priority = UILayoutPriority.init(rawValue: 999)
         self.scrollViewContentsHeight += height + topMargin
     }
     
@@ -469,14 +583,73 @@ extension AlermSettingViewController {
     }
     
     @objc private func tappedHourButton(_ sender: UITapGestureRecognizer) {
-        print("--- tapped hour button")
+        guard let button = sender.view as? CircleCustomButton else { return }
+        self.selectingHour = button.titleLabel?.text ?? ""
+        for hourButton in self.hourButtonList {
+            guard let label = hourButton.titleLabel?.text, label != self.selectingHour else {
+                hourButton.setOn(true)
+                hourButton.occureImpact(style: .light)
+                continue
+            }
+            hourButton.setOn(false)
+        }
+        for minButton in self.minutesButtonList {
+            guard let label = minButton.titleLabel?.text else { continue }
+            var isOn = false
+            for alermTime in self.alermTimeList {
+                if self.selectingHour == alermTime.hour, alermTime.min == label {
+                    isOn = true
+                }
+            }
+            minButton.setOn(isOn)
+        }
     }
     
     @objc private func tappedMinuteButton(_ sender: UITapGestureRecognizer) {
-        print("--- tapped minutes button")
+        guard let button = sender.view as? CircleCustomButton else { return }
+        guard self.selectingHour != nil, let min = button.titleLabel?.text else { return }
+        if button.active {
+            let removed = self.removeAlermTime(hour: self.selectingHour!, min: min)
+            if removed { button.toggle(button) }
+        } else {
+            let appended = self.appendAlermTime(alermTime: AlermTime(hour: self.selectingHour!, min: min))
+            if appended { button.toggle(button) }
+        }
+        self.setAlermTimeLabels()
     }
     
     @objc private func tappedWeekButton(_ sender: UITapGestureRecognizer) {
-        print("--- tapped week button")
+        guard let button = sender.view as? CircleCustomButton else { return }
+        guard let tappedWeek = button.titleLabel?.text else { return }
+        if button.active {
+            for (index, week) in self.weekList.enumerated() {
+                if week == tappedWeek {
+                    self.weekList.remove(at: index)
+                    break
+                }
+            }
+        } else {
+            self.weekList.append(tappedWeek)
+        }
+        button.toggle(button)
+    }
+    
+    @objc private func clearAlermTime(_ sender: UITapGestureRecognizer) {
+        guard let view = sender.view else { return }
+        let target = self.alermTimeList[view.tag]
+        let _ = self.removeAlermTime(hour: target.hour, min: target.min)
+        let generator = UIImpactFeedbackGenerator(style: .light)
+        generator.impactOccurred()
+        self.turnOffMinButtonOfTappedClearLabel(hour: target.hour, min: target.min)
+        self.setAlermTimeLabels()
+    }
+    
+    private func turnOffMinButtonOfTappedClearLabel(hour: String, min: String) {
+        guard hour == self.selectingHour else { return }
+        for minButton in self.minutesButtonList {
+            if minButton.label != min { continue }
+            minButton.toggle(minButton)
+            break
+        }
     }
 }
