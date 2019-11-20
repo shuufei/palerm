@@ -55,6 +55,7 @@ class AlermCard {
     var foot: AlermCardFoot? = nil
     var topAnchor: NSLayoutConstraint? = nil
     var topAnchorInitValue: CGFloat? = nil
+    var alermTimes: [AlermTime] = []
 
     var isExpand: Bool = false
     
@@ -91,6 +92,13 @@ class AlermCardGenerator {
         let alermCardHead = self.generateAlermCardHead(time: time)
         return AlermCard(view: alermCardHead.selfView, head: alermCardHead, alermTimeCellList: nil, foot: nil, isExpand: false)
     }
+    
+    func generate(alermTime: AlermTime) -> AlermCard {
+        let time = alermTime.time
+        let alermCard = self.generate(time: time)
+        alermCard.alermTimes = [alermTime]
+        return alermCard
+    }
 
     func generate(times: [String]) -> AlermCard {
         let alermCardHead = self.generateAlermCardHead(times: times)
@@ -99,7 +107,7 @@ class AlermCardGenerator {
         
         let alermCard = UIStackView()
         alermCard.translatesAutoresizingMaskIntoConstraints = false
-        alermCard.heightAnchor.constraint(equalToConstant: alermCardHead.selfView.frame.height + alermCardFoot.selfView.frame.height)
+//        alermCard.heightAnchor.constraint(equalToConstant: alermCardHead.selfView.frame.height + alermCardFoot.selfView.frame.height).isActive = true
         alermCard.axis = .vertical
         alermCard.distribution = .fill
         alermCard.alignment = .fill
@@ -116,6 +124,16 @@ class AlermCardGenerator {
             foot: alermCardFoot,
             isExpand: false
         )
+    }
+    
+    func generate(alermTimes: [AlermTime]) -> AlermCard {
+        var times: [String] = []
+        for alermTime in alermTimes {
+            times.append(alermTime.time)
+        }
+        let alermCard = self.generate(times: times)
+        alermCard.alermTimes = alermTimes
+        return alermCard
     }
 }
 

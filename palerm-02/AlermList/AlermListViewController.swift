@@ -14,7 +14,7 @@ final class AlermListViewController: UIViewController {
     @IBOutlet weak var tableView: UITableView!
     
     private let disposeBag = DisposeBag()
-    
+        
     private var presenter: AlermListPresenterInput!
     func inject(presenter: AlermListPresenterInput) {
         self.presenter = presenter
@@ -195,6 +195,7 @@ extension AlermListViewController: AlermListPresenterOutput {
     }
     
     func presentToSetting(viewController: UIViewController) {
-        present(viewController, animated: true, completion: nil)
+        let navigationController = UINavigationController(rootViewController: viewController)
+        present(navigationController, animated: true, completion: nil)
     }
 }

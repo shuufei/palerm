@@ -45,10 +45,15 @@ final class AlermListPresenter: AlermListPresenterInput {
             for (index, times) in alerms.enumerated() {
                 var alermCard: AlermCard?
                 if times.count == 1 {
-                    alermCard = self.alermCardGenerator.generate(time: times[0])
+                    let alermTime = AlermTime(time: times[0])
+                    alermCard = self.alermCardGenerator.generate(alermTime: alermTime)
                     alermCard!.head!.selfView.tag = index
                 } else {
-                    alermCard = self.alermCardGenerator.generate(times: times)
+                    var alermTimeList: [AlermTime] = []
+                    for time in times {
+                        alermTimeList.append(AlermTime(time: time))
+                    }
+                    alermCard = self.alermCardGenerator.generate(alermTimes: alermTimeList)
                     alermCard!.foot!.selfView.tag = index
                     alermCard!.head!.selfView.tag = index
                 }
@@ -100,6 +105,8 @@ extension AlermListPresenter: AlermCardDelegate {
                 return
             }
             let alermSettingViewController = AlermSettingViewController()
+            let alermTimes = self.alermCardList[alermCardIndex].alermTimes
+            alermSettingViewController.alermTimeList = alermTimes
             self.view.presentToSetting(viewController: alermSettingViewController)
             topAnchor.constant = topAnchorInitValue
             self.view.layoutIfNeededWithAnimation()

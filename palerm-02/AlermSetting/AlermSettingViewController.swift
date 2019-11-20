@@ -8,9 +8,20 @@
 
 import UIKit
 
-struct AlermTime {
+struct AlermTime: Codable {
     let hour: String
     let min: String
+    
+    init(hour: String, min: String) {
+        self.hour = hour
+        self.min = min
+    }
+    
+    init(time: String) {
+        let timeArr = time.components(separatedBy: ":")
+        self.hour = timeArr[0] 
+        self.min = timeArr[1]
+    }
     
     var time: String {
         get {
@@ -73,6 +84,7 @@ class AlermSettingViewController: UIViewController {
         self.setHoursView()
         self.setMinutesView()
         self.setLabelsView()
+        self.setAlermTimeLabels()
         self.setLoopView()
         self.setSettingCells()
 
@@ -81,35 +93,30 @@ class AlermSettingViewController: UIViewController {
     }
     
     private func setNavBar() {
+        if let navigationBar = self.navigationController?.navigationBar {
+            self.navBar = navigationBar
+        }
         self.navBar.barStyle = .default
         self.navBar.barTintColor = PalermColor.Dark500.UIColor
         self.navBar.isTranslucent = false
 
-        let navItem = UINavigationItem()
         let doneItem = UIBarButtonItem(title: "完了", style: .done, target: nil, action: nil)
         doneItem.tintColor = .white
         let cancelItem = UIBarButtonItem(title: "キャンセル", style: .plain, target: nil, action: nil)
         cancelItem.action = #selector(self.cancel(_:))
         cancelItem.tintColor = .white
-        navItem.rightBarButtonItem = doneItem
-        navItem.leftBarButtonItem = cancelItem
-        self.navBar.setItems([navItem], animated: false)
-        
-        self.view.addSubview(self.navBar)
-        
-        self.navBar.translatesAutoresizingMaskIntoConstraints = false
-        self.navBar.topAnchor.constraint(equalTo: self.view.topAnchor, constant: 0).isActive = true
-        self.navBar.leftAnchor.constraint(equalTo: self.view.leftAnchor, constant: 0).isActive = true
-        self.navBar.widthAnchor.constraint(equalTo: self.view.widthAnchor).isActive = true
+        self.navigationItem.rightBarButtonItem = doneItem
+        self.navigationItem.leftBarButtonItem = cancelItem
     }
     
     private func setScrollView() {
         self.view.addSubview(self.scrollView)
         self.scrollView.translatesAutoresizingMaskIntoConstraints = false
-        self.scrollView.topAnchor.constraint(equalTo: self.navBar.bottomAnchor).isActive = true
-        self.scrollView.leadingAnchor.constraint(equalTo: self.navBar.leadingAnchor).isActive = true
-        self.scrollView.trailingAnchor.constraint(equalTo: self.navBar.trailingAnchor).isActive = true
+        self.scrollView.topAnchor.constraint(equalTo: self.view.topAnchor).isActive = true
+        self.scrollView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor).isActive = true
+        self.scrollView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor).isActive = true
         self.scrollView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor).isActive = true
+        self.scrollView.showsVerticalScrollIndicator = false
     }
     
     private func generateViewCategoryLabel(category: String) -> UILabel {
@@ -190,7 +197,7 @@ extension AlermSettingViewController {
         for hour in 0...23 {
             let label = String(format: "%02d", hour)
             let hourButton = CircleCustomButton(size: buttonSize, color: PalermColor.Dark100.UIColor, label: label, type: .Hour)
-            if label == self.currentHour {
+            if label == self.selectingHour {
                 hourButton.setOn(true)
             }
             hourButton.addGestureRecognizer(
@@ -362,7 +369,7 @@ extension AlermSettingViewController {
             (alermTimeLabelHeight * CGFloat(alermTimeLabelStackCount))
             + (self.labelsView.spacing * CGFloat(alermTimeLabelStackCount - 1))
         )
-        self.labelsViewHeightConstraint.constant = labelsViewHeight
+        self.labelsViewHeightConstraint.constant = labelsViewHeight >= 0 ? labelsViewHeight : 0
         for i in 0..<alermTimeLabelStackCount {
             let offset = i * maxLabelsInStackCount
             let alermTimeListInStack = self.alermTimeList.dropFirst(offset).prefix(maxLabelsInStackCount)
@@ -434,6 +441,7 @@ extension AlermSettingViewController {
         self.loopView.topAnchor.constraint(equalTo: label.bottomAnchor, constant: 12).isActive = true
         
         let loopStack = self.generateLoopStack()
+        self.loopView.contentSize = CGSize(width: loopStack.frame.width + 24, height: loopStack.frame.height)
         self.loopView.addSubview(loopStack)
         self.view.layoutIfNeeded()
         self.scrollViewContentsHeight += self.loopView.frame.height + 12
@@ -495,13 +503,14 @@ extension AlermSettingViewController {
         let soundSettingCell = self.generateSoundSettingCell()
         self.setSettignCellConstraints(target: soundSettingCell, topAnchorTarget: topBorder.bottomAnchor, topMargin: 0, height: 44)
 
-        let cellSeparateBorder = self.setAndGetCellSeparateBorder(topAnchorTarget: soundSettingCell.bottomAnchor, topMargin: 0, height: borderHeight)
-        
-        let snoozeSettingCell = self.generateSnoozeSettingCell()
-        self.setSettignCellConstraints(target: snoozeSettingCell, topAnchorTarget: cellSeparateBorder.bottomAnchor, topMargin: 0, height: 48)
+//        let cellSeparateBorder = self.setAndGetCellSeparateBorder(topAnchorTarget: soundSettingCell.bottomAnchor, topMargin: 0, height: borderHeight)
+//
+//        let snoozeSettingCell = self.generateSnoozeSettingCell()
+//        self.setSettignCellConstraints(target: snoozeSettingCell, topAnchorTarget: cellSeparateBorder.bottomAnchor, topMargin: 0, height: 48)
         
         let bottomBorder = self.generateSeparateBorder()
-        self.setSettignCellConstraints(target: bottomBorder, topAnchorTarget: snoozeSettingCell.bottomAnchor, topMargin: 0, height: borderHeight)
+        self.setSettignCellConstraints(target: bottomBorder, topAnchorTarget: soundSettingCell.bottomAnchor, topMargin: 0, height: borderHeight)
+//        self.setSettignCellConstraints(target: bottomBorder, topAnchorTarget: snoozeSettingCell.bottomAnchor, topMargin: 0, height: borderHeight)
         
         let deleteCellTopBorder = self.generateSeparateBorder()
         self.setSettignCellConstraints(target: deleteCellTopBorder, topAnchorTarget: bottomBorder.bottomAnchor, topMargin: 32, height: borderHeight)
@@ -554,6 +563,8 @@ extension AlermSettingViewController {
         cell.textLabel?.textColor = UIColor(hexString: "efefef")
         cell.detailTextLabel?.text = "alerm"
         cell.detailTextLabel?.textColor = UIColor(hexString: "8E8E93")
+        cell.isUserInteractionEnabled = true
+        cell.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(self.navigateSoundSetting(_:))))
         return cell
     }
     
@@ -651,5 +662,13 @@ extension AlermSettingViewController {
             minButton.toggle(minButton)
             break
         }
+    }
+    
+    @objc private func navigateSoundSetting(_ sender: UITapGestureRecognizer) {
+        guard let view = sender.view as? UITableViewCell else { return }
+        view.setHighlighted(true, animated: false)
+        let alermSoundSettingViewController = AlermSoundSettingViewController()
+        self.navigationController?.pushViewController(alermSoundSettingViewController, animated: true)
+        view.setHighlighted(false, animated: true)
     }
 }

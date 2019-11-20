@@ -19,13 +19,13 @@ let alermTestData = Alerms(values: [
     ["08:00", "08:05", "08:10", "08:15", "08:20", "08:25", "08:30"],
     ["09:30"],
     ["10:10", "10:15", "10:20"]
-    ])
+])
 
 class AlermListModel: AlermListModelProtocol {
     
     let localCache: LocalCache = .shared
     private let _alerms = BehaviorRelay<[[String]]>(value: [])
-    
+
     public var alerms: BehaviorRelay<[[String]]> {
         get {
             return self._alerms
@@ -42,7 +42,7 @@ class AlermListModel: AlermListModelProtocol {
 
 struct Alerms: Codable {
     let values: [[String]]
-    
+
     init(values: [[String]]) {
         self.values = values
     }
