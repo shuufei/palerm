@@ -143,13 +143,26 @@ class AlermSettingViewController: UIViewController {
         }
         return false
     }
+    
+    private func turnOnMinuteButtons() {
+        for minButton in self.minutesButtonList {
+            guard let label = minButton.titleLabel?.text else { continue }
+            var isOn = false
+            for alermTime in self.alermTimeList {
+                if self.selectingHour == alermTime.hour, alermTime.min == label {
+                    isOn = true
+                }
+            }
+            minButton.setOn(isOn)
+        }
+    }
 
 }
 
 // 時間選択Viewの表示処理
 extension AlermSettingViewController {
     private func setHoursView() {
-        self.setCurrentHour()
+        self.setSelectingHour()
         
         let hoursViewTopMargin: CGFloat = 12
         let stackSpacing: CGFloat = 6
@@ -208,11 +221,15 @@ extension AlermSettingViewController {
         return hourButtonList
     }
     
-    private func setCurrentHour() {
-        let format = DateFormatter()
-        format.dateFormat = DateFormatter.dateFormat(fromTemplate: "H", options: 0, locale: .current)
-        self.currentHour = format.string(from: Date())
-        self.selectingHour = self.currentHour
+    private func setSelectingHour() {
+        if self.alermTimeList.count >= 1 {
+            let alermTime = self.alermTimeList[0]
+            self.selectingHour = alermTime.hour
+        } else {
+            let format = DateFormatter()
+            format.dateFormat = DateFormatter.dateFormat(fromTemplate: "H", options: 0, locale: .current)
+            self.selectingHour = format.string(from: Date())
+        }
     }
     
     private func setHourOffset(buttonSize: CGFloat, buttonSpacing: CGFloat, sidePadding: CGFloat) {
@@ -302,6 +319,7 @@ extension AlermSettingViewController {
             self.minutesView.addSubview(minuteButton)
         }
         self.scrollViewContentsHeight += self.minutesView.frame.height + 32
+        self.turnOnMinuteButtons()
     }
     
     private func setMinutesTitle() {
@@ -604,16 +622,7 @@ extension AlermSettingViewController {
             }
             hourButton.setOn(false)
         }
-        for minButton in self.minutesButtonList {
-            guard let label = minButton.titleLabel?.text else { continue }
-            var isOn = false
-            for alermTime in self.alermTimeList {
-                if self.selectingHour == alermTime.hour, alermTime.min == label {
-                    isOn = true
-                }
-            }
-            minButton.setOn(isOn)
-        }
+        self.turnOnMinuteButtons()
     }
     
     @objc private func tappedMinuteButton(_ sender: UITapGestureRecognizer) {
