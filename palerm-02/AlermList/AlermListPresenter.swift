@@ -19,6 +19,7 @@ protocol AlermListPresenterOutput: AnyObject {
     func resizeAlermCard(alermCard: AlermCard)
     func layoutIfNeededWithAnimation()
     func presentToSetting(viewController: UIViewController)
+    func reload()
 }
 
 final class AlermListPresenter: AlermListPresenterInput {
@@ -42,6 +43,7 @@ final class AlermListPresenter: AlermListPresenterInput {
         self.alermCardGenerator.delegate = self
         self.model.alerms.bind { alerms in
             print("--- changed alerms: ", alerms)
+            self._alermCardList = []
             for (index, times) in alerms.enumerated() {
                 var alermCard: AlermCard?
                 if times.count == 1 {
@@ -59,6 +61,7 @@ final class AlermListPresenter: AlermListPresenterInput {
                 }
                 self._alermCardList.append(alermCard!)
             }
+            self.view.reload()
         }
         .disposed(by: self.disposeBag)
     }

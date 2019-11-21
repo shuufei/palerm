@@ -12,6 +12,7 @@ import RxSwift
 
 protocol AlermListModelProtocol {
     func loadAlermListFromLocalCache()
+    func addAlerm(alerm: [String])
     var alerms: BehaviorRelay<[[String]]> { get }
 }
 
@@ -22,6 +23,7 @@ let alermTestData = Alerms(values: [
 ])
 
 class AlermListModel: AlermListModelProtocol {
+    static let shared = AlermListModel()
     
     let localCache: LocalCache = .shared
     private let _alerms = BehaviorRelay<[[String]]>(value: [])
@@ -36,6 +38,12 @@ class AlermListModel: AlermListModelProtocol {
         localCache.setEncodableObject(forKey: "alerms", value: alermTestData)
         let data = localCache.getDecodableObject(forKey: "alerms") as Alerms?
         guard let alerms = data?.values else { return }
+        self._alerms.accept(alerms)
+    }
+    
+    func addAlerm(alerm: [String]) {
+        var alerms = self.alerms.value
+        alerms.append(alerm)
         self._alerms.accept(alerms)
     }
 }

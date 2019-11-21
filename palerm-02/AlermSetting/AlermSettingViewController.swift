@@ -57,6 +57,8 @@ class AlermSettingViewController: UIViewController {
     private var selectingHour: String? = nil
     private var alermTimeLabelStackList: [UIStackView] = []
     
+    private let alermListModel: AlermListModel = .shared
+    
     init() {
         self.navBar = UINavigationBar(frame: CGRect(x: 0, y: 0, width: 0, height: 56))
         self.scrollView = UIScrollView()
@@ -84,7 +86,7 @@ class AlermSettingViewController: UIViewController {
         self.setHoursView()
         self.setMinutesView()
         self.setLabelsView()
-        self.setAlermTimeLabels()
+        self.setAlermTimeLabels(isInit: true)
         self.setLoopView()
         self.setSettingCells()
 
@@ -100,9 +102,9 @@ class AlermSettingViewController: UIViewController {
         self.navBar.barTintColor = PalermColor.Dark500.UIColor
         self.navBar.isTranslucent = false
 
-        let doneItem = UIBarButtonItem(title: "完了", style: .done, target: nil, action: nil)
+        let doneItem = UIBarButtonItem(title: "完了", style: .plain, target: self, action: #selector(self.done(_:)))
         doneItem.tintColor = .white
-        let cancelItem = UIBarButtonItem(title: "キャンセル", style: .plain, target: nil, action: nil)
+        let cancelItem = UIBarButtonItem(title: "キャンセル", style: .plain, target: self, action: #selector(self.cancel(_:)))
         cancelItem.action = #selector(self.cancel(_:))
         cancelItem.tintColor = .white
         self.navigationItem.rightBarButtonItem = doneItem
@@ -375,7 +377,7 @@ extension AlermSettingViewController {
         self.scrollViewContentsHeight += self.labelsView.frame.height
     }
     
-    private func setAlermTimeLabels() {
+    private func setAlermTimeLabels(isInit: Bool = false) {
         for stack in self.alermTimeLabelStackList { stack.removeFromSuperview() }
         let maxLabelsInStackCount = 3
         let safeAreaWidth = self.view.frame.width - self.view.safeAreaInsets.left - self.view.safeAreaInsets.right
@@ -427,10 +429,14 @@ extension AlermSettingViewController {
             self.alermTimeLabelStackList.append(stack)
         }
         self.view.layoutIfNeeded()
+        
         self.scrollView.contentSize = CGSize(
             width: self.view.frame.width,
             height: self.scrollViewContentsHeight + self.labelsView.frame.height
         )
+        if isInit { // 初期化処理時の呼出の場合は、contents heightに高さを加える
+            self.scrollViewContentsHeight += self.labelsView.frame.height
+        }
     }
     
     private func generateAlermTimeLabelClearButton() -> UIView {
@@ -608,6 +614,16 @@ extension AlermSettingViewController {
 
 extension AlermSettingViewController {
     @objc func cancel(_ sender: UIButton) {
+        self.dismiss(animated: true, completion: nil)
+    }
+    
+    @objc func done(_ sender: UIButton) {
+        print("-- done")
+        var alerm: [String] = []
+        for time in self.alermTimeList {
+            alerm.append(time.time)
+        }
+        self.alermListModel.addAlerm(alerm: alerm)
         self.dismiss(animated: true, completion: nil)
     }
     
