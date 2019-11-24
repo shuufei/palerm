@@ -50,6 +50,7 @@ struct AlermState {
 class AlermCard {
     let selfView: UIStackView
     
+    var uuid: String = NSUUID().uuidString
     var head: AlermCardHead? = nil
     var alermTimeCellList: AlermCardTimeCellList? = nil
     var foot: AlermCardFoot? = nil
@@ -63,8 +64,10 @@ class AlermCard {
         self.selfView = view
     }
     
-    init(view: UIStackView, head: AlermCardHead?, alermTimeCellList: AlermCardTimeCellList?, foot: AlermCardFoot?, isExpand: Bool) {
+    init(view: UIStackView, uuid: String, head: AlermCardHead?, alermTimeCellList: AlermCardTimeCellList?, foot: AlermCardFoot?, isExpand: Bool) {
         self.selfView = view
+        
+        self.uuid = uuid
         self.head = head
         self.alermTimeCellList = alermTimeCellList
         self.foot = foot
@@ -88,19 +91,19 @@ class AlermCardGenerator {
     
     var delegate: AlermCardDelegate?
 
-    func generate(time: String) -> AlermCard {
+    func generate(time: String, uuid: String) -> AlermCard {
         let alermCardHead = self.generateAlermCardHead(time: time)
-        return AlermCard(view: alermCardHead.selfView, head: alermCardHead, alermTimeCellList: nil, foot: nil, isExpand: false)
+        return AlermCard(view: alermCardHead.selfView, uuid: uuid, head: alermCardHead, alermTimeCellList: nil, foot: nil, isExpand: false)
     }
     
-    func generate(alermTime: AlermTime) -> AlermCard {
+    func generate(alermTime: AlermTime, uuid: String) -> AlermCard {
         let time = alermTime.time
-        let alermCard = self.generate(time: time)
+        let alermCard = self.generate(time: time, uuid: uuid)
         alermCard.alermTimes = [alermTime]
         return alermCard
     }
 
-    func generate(times: [String]) -> AlermCard {
+    func generate(times: [String], uuid: String) -> AlermCard {
         let alermCardHead = self.generateAlermCardHead(times: times)
         let alermTimeCellList = self.generateAlermCardExpandView(times: times, width: alermCardHead.selfView.frame.width)
         let alermCardFoot = self.generateAlermCardExpandViewTrigger(width: alermCardHead.selfView.frame.width)
@@ -119,6 +122,7 @@ class AlermCardGenerator {
         
         return AlermCard(
             view: alermCard,
+            uuid: uuid,
             head: alermCardHead,
             alermTimeCellList: alermTimeCellList,
             foot: alermCardFoot,
@@ -126,12 +130,12 @@ class AlermCardGenerator {
         )
     }
     
-    func generate(alermTimes: [AlermTime]) -> AlermCard {
+    func generate(alermTimes: [AlermTime], uuid: String) -> AlermCard {
         var times: [String] = []
         for alermTime in alermTimes {
             times.append(alermTime.time)
         }
-        let alermCard = self.generate(times: times)
+        let alermCard = self.generate(times: times, uuid: uuid)
         alermCard.alermTimes = alermTimes
         return alermCard
     }

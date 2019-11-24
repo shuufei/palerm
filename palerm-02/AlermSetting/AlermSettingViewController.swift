@@ -37,7 +37,8 @@ struct AlermTime: Codable {
 }
 
 class AlermSettingViewController: UIViewController {
-    public var alermTimeList: [AlermTime] = []
+    public let uuid: String
+    public var alermTimeList: [AlermTime]
     public var weekList: [String] = []
     
     private var navBar: UINavigationBar
@@ -59,7 +60,10 @@ class AlermSettingViewController: UIViewController {
     
     private let alermListModel: AlermListModel = .shared
     
-    init() {
+    init(uuid: String?, alermTimeList: [AlermTime]) {
+        self.uuid = uuid ?? NSUUID().uuidString
+        self.alermTimeList = alermTimeList
+
         self.navBar = UINavigationBar(frame: CGRect(x: 0, y: 0, width: 0, height: 56))
         self.scrollView = UIScrollView()
         self.hoursView = UIScrollView()
@@ -618,12 +622,16 @@ extension AlermSettingViewController {
     }
     
     @objc func done(_ sender: UIButton) {
-        print("-- done")
-        var alerm: [String] = []
+        var alermTimes: [String] = []
         for time in self.alermTimeList {
-            alerm.append(time.time)
+            alermTimes.append(time.time)
         }
-        self.alermListModel.addAlerm(alerm: alerm)
+        let isNewAlerm = self.alermListModel.alerms.value.first(where: { $0.id == self.uuid }) != nil ? false : true
+        if (isNewAlerm) {
+            self.alermListModel.addAlerm(alerm: Alerm(times: alermTimes))
+        } else {
+            self.alermListModel.updateAlerm(alerm: Alerm(id: self.uuid, times: alermTimes))
+        }
         self.dismiss(animated: true, completion: nil)
     }
     

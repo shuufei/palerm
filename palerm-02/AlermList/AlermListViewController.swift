@@ -93,8 +93,7 @@ final class AlermListViewController: UIViewController {
                 self.view.layoutIfNeeded()
             })
             // ここの責務じゃない
-            let alermSettingViewContoller = AlermSettingViewController()
-            alermSettingViewContoller.alermTimeList = []
+            let alermSettingViewContoller = AlermSettingViewController(uuid: nil, alermTimeList: [])
             self.presentToSetting(viewController: alermSettingViewContoller)
         default:
             return

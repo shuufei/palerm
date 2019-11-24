@@ -44,18 +44,18 @@ final class AlermListPresenter: AlermListPresenterInput {
         self.model.alerms.bind { alerms in
             print("--- changed alerms: ", alerms)
             self._alermCardList = []
-            for (index, times) in alerms.enumerated() {
+            for (index, alerm) in alerms.enumerated() {
                 var alermCard: AlermCard?
-                if times.count == 1 {
-                    let alermTime = AlermTime(time: times[0])
-                    alermCard = self.alermCardGenerator.generate(alermTime: alermTime)
+                if alerm.times.count == 1 {
+                    let alermTime = AlermTime(time: alerm.times[0])
+                    alermCard = self.alermCardGenerator.generate(alermTime: alermTime, uuid: alerm.id)
                     alermCard!.head!.selfView.tag = index
                 } else {
                     var alermTimeList: [AlermTime] = []
-                    for time in times {
+                    for time in alerm.times {
                         alermTimeList.append(AlermTime(time: time))
                     }
-                    alermCard = self.alermCardGenerator.generate(alermTimes: alermTimeList)
+                    alermCard = self.alermCardGenerator.generate(alermTimes: alermTimeList, uuid: alerm.id)
                     alermCard!.foot!.selfView.tag = index
                     alermCard!.head!.selfView.tag = index
                 }
@@ -107,9 +107,11 @@ extension AlermListPresenter: AlermCardDelegate {
                 self.view.layoutIfNeededWithAnimation()
                 return
             }
-            let alermSettingViewController = AlermSettingViewController()
+            let uuid = self.alermCardList[alermCardIndex].uuid
             let alermTimes = self.alermCardList[alermCardIndex].alermTimes
-            alermSettingViewController.alermTimeList = alermTimes
+            let alermSettingViewController = AlermSettingViewController(uuid: uuid, alermTimeList: alermTimes)
+            
+//            alermSettingViewController.alermTimeList = alermTimes
             self.view.presentToSetting(viewController: alermSettingViewController)
             topAnchor.constant = topAnchorInitValue
             self.view.layoutIfNeededWithAnimation()
