@@ -153,24 +153,24 @@ extension AlermListViewController: UITableViewDataSource {
         cell.clipsToBounds = false
         cell.layer.zPosition = CGFloat(1 * index)
 
-        let alermCard = self.presenter.alermCardList[index].selfView
+        let alermCardView = self.presenter.alermCardList[index].selfView
         var yPosition: CGFloat = CGFloat(ALERM_CARD_CELL_TOP_PADDING)
         if index == 0 {
             yPosition = CGFloat(ALERM_CARD_CELL_TOP_PADDING_WHEN_FIRST_CELL)
         }
-        alermCard.frame.origin = CGPoint(x: 0, y: yPosition)
-        alermCard.center.x = self.view.center.x
+        alermCardView.frame.origin = CGPoint(x: 0, y: yPosition)
+        alermCardView.center.x = self.view.center.x
 
-        cell.addSubview(alermCard)
+        cell.addSubview(alermCardView)
         var topMargin: CGFloat = CGFloat(ALERM_CARD_CELL_TOP_PADDING)
         if index == 0 {
             topMargin = CGFloat(ALERM_CARD_CELL_TOP_PADDING_WHEN_FIRST_CELL)
         }
-        let topAnchor = alermCard.topAnchor.constraint(equalTo: cell.topAnchor, constant: topMargin)
+        let topAnchor = alermCardView.topAnchor.constraint(equalTo: cell.topAnchor, constant: topMargin)
         topAnchor.isActive = true
         self.presenter.alermCardList[index].setTopAnchor(topAnchor)
-        alermCard.leadingAnchor.constraint(equalTo: cell.leadingAnchor, constant: 16).isActive = true
-        alermCard.trailingAnchor.constraint(equalTo: cell.trailingAnchor, constant: -16).isActive = true
+        alermCardView.leadingAnchor.constraint(equalTo: cell.leadingAnchor, constant: 16).isActive = true
+        alermCardView.trailingAnchor.constraint(equalTo: cell.trailingAnchor, constant: -16).isActive = true
         cell.layoutIfNeeded()
         return cell
     }

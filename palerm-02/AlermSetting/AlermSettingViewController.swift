@@ -626,7 +626,7 @@ extension AlermSettingViewController {
         for time in self.alermTimeList {
             alermTimes.append(time.time)
         }
-        let isNewAlerm = self.alermListModel.alerms.value.first(where: { $0.id == self.uuid }) != nil ? false : true
+        let isNewAlerm = self.alermListModel.alerms.first(where: { $0.id == self.uuid }) != nil ? false : true
         if (isNewAlerm) {
             self.alermListModel.addAlerm(alerm: Alerm(times: alermTimes))
         } else {

@@ -8,6 +8,7 @@
 
 import Foundation
 import UIKit
+import RxCocoa
 
 struct AlermCardHead {
     let selfView: UIStackView
@@ -83,6 +84,7 @@ class AlermCard {
 protocol AlermCardDelegate {
     func tapped(_ sender: UILongPressGestureRecognizer)
     func tappedExpandTrigger(_ sender: UITapGestureRecognizer)
+    func switchedAlermEnableOfCell(_ sender: UISwitch)
 }
 
 class AlermCardGenerator {
@@ -91,21 +93,21 @@ class AlermCardGenerator {
     
     var delegate: AlermCardDelegate?
 
-    func generate(time: String, uuid: String) -> AlermCard {
-        let alermCardHead = self.generateAlermCardHead(time: time)
+    func generate(time: String, uuid: String, isEnable: Bool) -> AlermCard {
+        let alermCardHead = self.generateAlermCardHead(time: time, isEnable: isEnable)
         return AlermCard(view: alermCardHead.selfView, uuid: uuid, head: alermCardHead, alermTimeCellList: nil, foot: nil, isExpand: false)
     }
     
-    func generate(alermTime: AlermTime, uuid: String) -> AlermCard {
+    func generate(alermTime: AlermTime, uuid: String, isEnable: Bool) -> AlermCard {
         let time = alermTime.time
-        let alermCard = self.generate(time: time, uuid: uuid)
+        let alermCard = self.generate(time: time, uuid: uuid, isEnable: isEnable)
         alermCard.alermTimes = [alermTime]
         return alermCard
     }
 
-    func generate(times: [String], uuid: String) -> AlermCard {
-        let alermCardHead = self.generateAlermCardHead(times: times)
-        let alermTimeCellList = self.generateAlermCardExpandView(times: times, width: alermCardHead.selfView.frame.width)
+    func generate(times: [String], uuid: String, enableTimes: [String]) -> AlermCard {
+        let alermCardHead = self.generateAlermCardHead(times: times, enableTimes: enableTimes)
+        let alermTimeCellList = self.generateAlermCardExpandView(times: times, width: alermCardHead.selfView.frame.width, enableTimes: enableTimes)
         let alermCardFoot = self.generateAlermCardExpandViewTrigger(width: alermCardHead.selfView.frame.width)
         
         let alermCard = UIStackView()
@@ -130,12 +132,12 @@ class AlermCardGenerator {
         )
     }
     
-    func generate(alermTimes: [AlermTime], uuid: String) -> AlermCard {
+    func generate(alermTimes: [AlermTime], uuid: String, enableTimes: [String]) -> AlermCard {
         var times: [String] = []
         for alermTime in alermTimes {
             times.append(alermTime.time)
         }
-        let alermCard = self.generate(times: times, uuid: uuid)
+        let alermCard = self.generate(times: times, uuid: uuid, enableTimes: enableTimes)
         alermCard.alermTimes = alermTimes
         return alermCard
     }
@@ -143,10 +145,11 @@ class AlermCardGenerator {
 
 // 時間が一つだけ設定されているAlermCard生成処理
 extension AlermCardGenerator {
-    private func generateAlermCardHead(time: String) -> AlermCardHead {
+    private func generateAlermCardHead(time: String, isEnable: Bool = false) -> AlermCardHead {
         let timeLabel = self.generateTimeLabelForSingleSetting(time: time)
         let switcher = UISwitch(frame: CGRect(x: 0, y: 0, width: 0, height: 0))
         switcher.sizeToFit()
+        switcher.setOn(isEnable, animated: false)
         
         let labelAndSwitcherWrapper = UIStackView()
         let topPadding = CGFloat(12)
@@ -191,10 +194,13 @@ extension AlermCardGenerator {
 // 時間が複数設定されているAlermCard生成処理
 extension AlermCardGenerator {
     // 時間ラベルのStackViewとSwitcherのStackを生成
-    private func generateAlermCardHead(times: [String]) -> AlermCardHead {
+    private func generateAlermCardHead(times: [String], enableTimes: [String]) -> AlermCardHead {
         let timeLabelStacksView = self.generateTimeLabelsList(times: times)
         let switcher = UISwitch(frame: CGRect(x: 0, y: 0, width: 0, height: 0))
         switcher.sizeToFit()
+        let isEnable = enableTimes.count > 0
+        switcher.setOn(isEnable, animated: false)
+        
         let labelsAndSwitcherWrapper = UIStackView()
         let headPaddingTop: CGFloat = 12
         let headPaddingBottom: CGFloat = 12
@@ -220,13 +226,14 @@ extension AlermCardGenerator {
     }
     
     // 拡縮可能な領域を生成。時間ごとにアラームのON／OFFを指定できるViewが含まれる。
-    private func generateAlermCardExpandView(times: [String], width: CGFloat) -> AlermCardTimeCellList {
+    private func generateAlermCardExpandView(times: [String], width: CGFloat, enableTimes: [String]) -> AlermCardTimeCellList {
         var cells: [UIStackView] = []
         var cellHeight: CGFloat = 0
         var alermStateList: [AlermState] = []
         
         for time in times {
-            let (cell, alermState) = self.generateTimeCell(time: time, width: width)
+            let isEnable = enableTimes.first(where: { $0 == time }) != nil ? true : false
+            let (cell, alermState) = self.generateTimeCell(time: time, width: width, isEnable: isEnable)
             cells.append(cell)
             cellHeight += cell.frame.height
             alermStateList.append(alermState)
@@ -248,7 +255,7 @@ extension AlermCardGenerator {
     }
 
     // 時間ごとにアラームのON／OFFを指定できるViewを生成
-    private func generateTimeCell(time: String, width: CGFloat) -> (cell: UIStackView, alermState: AlermState) {
+    private func generateTimeCell(time: String, width: CGFloat, isEnable: Bool) -> (cell: UIStackView, alermState: AlermState) {
         let stackView = UIStackView(frame: CGRect(x: 0, y: 0, width: width, height: 54))
         stackView.translatesAutoresizingMaskIntoConstraints = false
         stackView.heightAnchor.constraint(lessThanOrEqualToConstant: 54).isActive = true
@@ -266,7 +273,9 @@ extension AlermCardGenerator {
         
         let switcher = UISwitch()
         switcher.sizeToFit()
-        
+        switcher.setOn(isEnable, animated: false)
+        switcher.addTarget(self, action: #selector(self.switchedAlermEnableOfCell(_:)), for: .valueChanged)
+
         stackView.addArrangedSubview(timeLabel)
         stackView.addArrangedSubview(switcher)
         stackView.isLayoutMarginsRelativeArrangement = true
@@ -402,6 +411,11 @@ extension AlermCardGenerator {
     @objc func tappedExpandTrigger(_ sender: UITapGestureRecognizer) {
         guard let delegate = self.delegate else { return }
         delegate.tappedExpandTrigger(sender)
+    }
+    
+    @objc func switchedAlermEnableOfCell(_ sender: UISwitch) {
+        guard let delegate = self.delegate else { return }
+        delegate.switchedAlermEnableOfCell(sender)
     }
 }
 

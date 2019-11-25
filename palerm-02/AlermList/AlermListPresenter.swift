@@ -41,21 +41,23 @@ final class AlermListPresenter: AlermListPresenterInput {
         self.view = view
         self.model = model
         self.alermCardGenerator.delegate = self
-        self.model.alerms.bind { alerms in
+        self.model.alerms$.bind { _ in
+            let alerms = self.model.alerms
             print("--- changed alerms: ", alerms)
             self._alermCardList = []
             for (index, alerm) in alerms.enumerated() {
                 var alermCard: AlermCard?
                 if alerm.times.count == 1 {
                     let alermTime = AlermTime(time: alerm.times[0])
-                    alermCard = self.alermCardGenerator.generate(alermTime: alermTime, uuid: alerm.id)
+                    let isEnable = (alerm.enableTimes.count > 0 && alerm.enableTimes[0] == alerm.times[0])
+                    alermCard = self.alermCardGenerator.generate(alermTime: alermTime, uuid: alerm.id, isEnable: isEnable)
                     alermCard!.head!.selfView.tag = index
                 } else {
                     var alermTimeList: [AlermTime] = []
                     for time in alerm.times {
                         alermTimeList.append(AlermTime(time: time))
                     }
-                    alermCard = self.alermCardGenerator.generate(alermTimes: alermTimeList, uuid: alerm.id)
+                    alermCard = self.alermCardGenerator.generate(alermTimes: alermTimeList, uuid: alerm.id, enableTimes: alerm.enableTimes)
                     alermCard!.foot!.selfView.tag = index
                     alermCard!.head!.selfView.tag = index
                 }
@@ -68,6 +70,25 @@ final class AlermListPresenter: AlermListPresenterInput {
 
     func loadAlermList() {
         model.loadAlermListFromLocalCache()
+    }
+    
+    func updateEnableAlermTimes() {
+        for alermCard in self.alermCardList {
+            if (alermCard.alermTimes.count == 1) {
+                guard let switcher = alermCard.head?.switcher else { continue }
+                let times = alermCard.alermTimes.map({ $0.time })
+                let enableTimes = switcher.isOn ? times : []
+                let alerm = Alerm(id: alermCard.uuid, times: times, enableTimes: enableTimes)
+                self.model.updateAlerm(alerm: alerm, isCommit: false)
+            } else {
+                guard let alermStateList = alermCard.alermTimeCellList?.alermStateList else { return }
+                let times = alermCard.alermTimes.map({ $0.time })
+                let enableTimes = alermStateList.filter({ $0.switcher.isOn }).map({ $0.time })
+                print("--- enable times: ", enableTimes)
+                let alerm = Alerm(id: alermCard.uuid, times: times, enableTimes: enableTimes)
+                self.model.updateAlerm(alerm: alerm, isCommit: false)
+            }
+        }
     }
 }
 
@@ -110,8 +131,7 @@ extension AlermListPresenter: AlermCardDelegate {
             let uuid = self.alermCardList[alermCardIndex].uuid
             let alermTimes = self.alermCardList[alermCardIndex].alermTimes
             let alermSettingViewController = AlermSettingViewController(uuid: uuid, alermTimeList: alermTimes)
-            
-//            alermSettingViewController.alermTimeList = alermTimes
+
             self.view.presentToSetting(viewController: alermSettingViewController)
             topAnchor.constant = topAnchorInitValue
             self.view.layoutIfNeededWithAnimation()
@@ -132,9 +152,15 @@ extension AlermListPresenter: AlermCardDelegate {
         switcher.setOn(newState, animated: true)
         let impactGenerator = UIImpactFeedbackGenerator(style: .light)
         impactGenerator.impactOccurred()
-        guard let alermStateList = alermCard.alermTimeCellList?.alermStateList else { return }
-        for alermState in alermStateList {
-            alermState.switcher.setOn(newState, animated: true)
+        if let alermStateList = alermCard.alermTimeCellList?.alermStateList {
+            for alermState in alermStateList {
+                alermState.switcher.setOn(newState, animated: true)
+            }
         }
+        self.updateEnableAlermTimes()
+    }
+    
+    func switchedAlermEnableOfCell(_ sender: UISwitch) {
+        self.updateEnableAlermTimes()
     }
 }
