@@ -415,7 +415,8 @@ extension AlermSettingViewController {
                 labelText.sizeToFit()
                 
                 let alermTimeLabel = UIView()
-                alermTimeLabel.backgroundColor = UIColor(hexString: "3f3f3f")
+//                alermTimeLabel.backgroundColor = UIColor(hexString: "3f3f3f")
+                alermTimeLabel.backgroundColor = PalermColor.Blue.UIColor
                 alermTimeLabel.heightAnchor.constraint(equalToConstant: alermTimeLabelHeight).isActive = true
                 alermTimeLabel.widthAnchor.constraint(equalToConstant: alermTimeLabelWidth).isActive = true
                 
@@ -457,20 +458,23 @@ extension AlermSettingViewController {
 // くり返し選択Viewの表示処理
 extension AlermSettingViewController {
     private func setLoopView() {
-        let label = self.setAndGetLoopTitle()
+//        let label = self.setAndGetLoopTitle()
         self.loopView.contentOffset = CGPoint(x: 0, y: 0)
         self.loopView.showsHorizontalScrollIndicator = false
         
         self.scrollView.addSubview(self.loopView)
         self.loopView.translatesAutoresizingMaskIntoConstraints = false
-        self.loopView.heightAnchor.constraint(equalToConstant: 60).isActive = true
+//        self.loopView.heightAnchor.constraint(equalToConstant: 60).isActive = true
+        self.loopView.heightAnchor.constraint(equalToConstant: 1).isActive = true
         self.loopView.leadingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.leadingAnchor).isActive = true
         self.loopView.trailingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.trailingAnchor).isActive = true
-        self.loopView.topAnchor.constraint(equalTo: label.bottomAnchor, constant: 12).isActive = true
+//        self.loopView.topAnchor.constraint(equalTo: label.bottomAnchor, constant: 12).isActive = true
+        self.loopView.topAnchor.constraint(equalTo: self.labelsView.bottomAnchor, constant: 0).isActive = true
         
         let loopStack = self.generateLoopStack()
-        self.loopView.contentSize = CGSize(width: loopStack.frame.width + 24, height: loopStack.frame.height)
-        self.loopView.addSubview(loopStack)
+//        self.loopView.contentSize = CGSize(width: loopStack.frame.width + 24, height: loopStack.frame.height)
+        self.loopView.contentSize = CGSize(width: loopStack.frame.width + 24, height: 1)
+//        self.loopView.addSubview(loopStack)
         self.view.layoutIfNeeded()
         self.scrollViewContentsHeight += self.loopView.frame.height + 12
     }
@@ -526,7 +530,7 @@ extension AlermSettingViewController {
         let borderHeight: CGFloat = 0.5
         
         let topBorder = self.generateSeparateBorder()
-        self.setSettignCellConstraints(target: topBorder, topAnchorTarget: self.loopView.bottomAnchor, topMargin: 24, height: borderHeight)
+        self.setSettignCellConstraints(target: topBorder, topAnchorTarget: self.loopView.bottomAnchor, topMargin: 32, height: borderHeight)
         
         let soundSettingCell = self.generateSoundSettingCell()
         self.setSettignCellConstraints(target: soundSettingCell, topAnchorTarget: topBorder.bottomAnchor, topMargin: 0, height: 44)
