@@ -84,7 +84,6 @@ final class AlermListPresenter: AlermListPresenterInput {
                 guard let alermStateList = alermCard.alermTimeCellList?.alermStateList else { return }
                 let times = alermCard.alermTimes.map({ $0.time })
                 let enableTimes = alermStateList.filter({ $0.switcher.isOn }).map({ $0.time })
-                print("--- enable times: ", enableTimes)
                 let alerm = Alerm(id: alermCard.uuid, times: times, enableTimes: enableTimes)
                 self.model.updateAlerm(alerm: alerm, isCommit: false)
             }
