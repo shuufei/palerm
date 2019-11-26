@@ -162,6 +162,11 @@ class AlermSettingViewController: UIViewController {
             minButton.setOn(isOn)
         }
     }
+    
+    private func deleteAlerm() {
+        self.alermListModel.deleteAlerm(uuid: self.uuid, isCommit: true)
+        self.cancel(nil)
+    }
 
 }
 
@@ -616,16 +621,18 @@ extension AlermSettingViewController {
         cell.textLabel?.text = "アラームを削除"
         cell.textLabel?.textColor = .red
         cell.textLabel?.textAlignment = .center
+        cell.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(self.confirmDeleteAlerm(_:))))
         return cell
     }
 }
 
+@objc
 extension AlermSettingViewController {
-    @objc func cancel(_ sender: UIButton) {
+    func cancel(_ sender: UIButton?) {
         self.dismiss(animated: true, completion: nil)
     }
     
-    @objc func done(_ sender: UIButton) {
+    func done(_ sender: UIButton) {
         var alermTimes: [String] = []
         for time in self.alermTimeList {
             alermTimes.append(time.time)
@@ -639,7 +646,7 @@ extension AlermSettingViewController {
         self.dismiss(animated: true, completion: nil)
     }
     
-    @objc private func tappedHourButton(_ sender: UITapGestureRecognizer) {
+    private func tappedHourButton(_ sender: UITapGestureRecognizer) {
         guard let button = sender.view as? CircleCustomButton else { return }
         self.selectingHour = button.titleLabel?.text ?? ""
         for hourButton in self.hourButtonList {
@@ -653,7 +660,7 @@ extension AlermSettingViewController {
         self.turnOnMinuteButtons()
     }
     
-    @objc private func tappedMinuteButton(_ sender: UITapGestureRecognizer) {
+    private func tappedMinuteButton(_ sender: UITapGestureRecognizer) {
         guard let button = sender.view as? CircleCustomButton else { return }
         guard self.selectingHour != nil, let min = button.titleLabel?.text else { return }
         if button.active {
@@ -666,7 +673,7 @@ extension AlermSettingViewController {
         self.setAlermTimeLabels()
     }
     
-    @objc private func tappedWeekButton(_ sender: UITapGestureRecognizer) {
+    private func tappedWeekButton(_ sender: UITapGestureRecognizer) {
         guard let button = sender.view as? CircleCustomButton else { return }
         guard let tappedWeek = button.titleLabel?.text else { return }
         if button.active {
@@ -682,7 +689,7 @@ extension AlermSettingViewController {
         button.toggle(button)
     }
     
-    @objc private func clearAlermTime(_ sender: UITapGestureRecognizer) {
+    private func clearAlermTime(_ sender: UITapGestureRecognizer) {
         guard let view = sender.view else { return }
         let target = self.alermTimeList[view.tag]
         let _ = self.removeAlermTime(hour: target.hour, min: target.min)
@@ -701,11 +708,34 @@ extension AlermSettingViewController {
         }
     }
     
-    @objc private func navigateSoundSetting(_ sender: UITapGestureRecognizer) {
+    private func navigateSoundSetting(_ sender: UITapGestureRecognizer) {
         guard let view = sender.view as? UITableViewCell else { return }
         view.setHighlighted(true, animated: false)
         let alermSoundSettingViewController = AlermSoundSettingViewController()
         self.navigationController?.pushViewController(alermSoundSettingViewController, animated: true)
         view.setHighlighted(false, animated: true)
+    }
+    
+    private func confirmDeleteAlerm(_ sender: UITapGestureRecognizer) {
+        guard let view = sender.view as? UITableViewCell else { return }
+        view.setHighlighted(true, animated: false)
+        let alert = UIAlertController(title: "アラームを削除しますか？", message: nil, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(
+            title: "キャンセル",
+            style: .cancel,
+            handler: {(action) -> Void in
+                view.setHighlighted(false, animated: false)
+            }
+        ))
+        alert.addAction(UIAlertAction(
+            title: "削除",
+            style: .destructive,
+            handler: {(action) -> Void in
+                view.setHighlighted(false, animated: false)
+                self.deleteAlerm()
+            }
+        ))
+        
+        self.present(alert, animated: true, completion: nil)
     }
 }

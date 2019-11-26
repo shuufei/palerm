@@ -14,6 +14,7 @@ protocol AlermListModelProtocol {
     func loadAlermListFromLocalCache()
     func addAlerm(alerm: Alerm)
     func updateAlerm(alerm: Alerm, isCommit: Bool)
+    func deleteAlerm(uuid: String, isCommit: Bool)
     var alerms$: BehaviorRelay<[Alerm]> { get }
     var alerms: [Alerm] { get }
 }
@@ -67,6 +68,16 @@ class AlermListModel: AlermListModelProtocol {
         self.alerms = alerms
         if (isCommit) {
             self._alerms$.accept(alerms)
+        }
+    }
+    
+    func deleteAlerm(uuid: String, isCommit: Bool = true) {
+        let targetIndex = self.alerms.firstIndex(where: { $0.id == uuid })
+        guard targetIndex != nil else { return }
+        self.alerms.remove(at: targetIndex!)
+        self.setAlermListToLocalCache(alermList: self.alerms)
+        if (isCommit) {
+            self._alerms$.accept(self.alerms)
         }
     }
     
