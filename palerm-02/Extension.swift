@@ -13,9 +13,9 @@ extension UIColor {
     convenience init?(hexString: String, alpha: CGFloat = 1.0) {
         let validatedHexColorCode = hexString.replacingOccurrences(of: "#", with: "")
         let scanner = Scanner(string: validatedHexColorCode)
-        var colorCode: UInt32 = 0
+        var colorCode: UInt64 = 0
         
-        guard scanner.scanHexInt32(&colorCode) else {
+        guard scanner.scanHexInt64(&colorCode) else {
             print("ERROR: 色変換に失敗しました。")
             return nil
         }

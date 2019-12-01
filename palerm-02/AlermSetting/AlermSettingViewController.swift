@@ -8,9 +8,13 @@
 
 import UIKit
 
-struct AlermTime: Codable {
+struct AlermTime: Codable, Equatable {
     let hour: String
     let min: String
+    
+    static func == (lhs: AlermTime, rhs: AlermTime) -> Bool {
+        return lhs.time == rhs.time
+    }
     
     init(hour: String, min: String) {
         self.hour = hour
@@ -39,6 +43,7 @@ struct AlermTime: Codable {
 class AlermSettingViewController: UIViewController {
     public let uuid: String
     public var alermTimeList: [AlermTime]
+    public var alermTimeListBeforeEdit: [AlermTime]
     public var weekList: [String] = []
     
     private var navBar: UINavigationBar
@@ -63,6 +68,7 @@ class AlermSettingViewController: UIViewController {
     init(uuid: String?, alermTimeList: [AlermTime]) {
         self.uuid = uuid ?? NSUUID().uuidString
         self.alermTimeList = alermTimeList
+        self.alermTimeListBeforeEdit = alermTimeList
 
         self.navBar = UINavigationBar(frame: CGRect(x: 0, y: 0, width: 0, height: 56))
         self.scrollView = UIScrollView()
@@ -80,7 +86,13 @@ class AlermSettingViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.navigationController?.presentationController?.delegate = self
         self.setup()
+    }
+    
+    override func viewWillLayoutSubviews() {
+        let isChanged = self.alermTimeListBeforeEdit != self.alermTimeList
+        self.isModalInPresentation = isChanged
     }
     
     private func setup() {
@@ -166,6 +178,30 @@ class AlermSettingViewController: UIViewController {
     private func deleteAlerm() {
         self.alermListModel.deleteAlerm(uuid: self.uuid, isCommit: true)
         self.cancel(nil)
+    }
+    
+    private func confirmDeleteEdit() {
+        let alert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+        alert.addAction(UIAlertAction(
+            title: "キャンセル",
+            style: .cancel,
+            handler: {(action) -> Void in
+            }
+        ))
+        alert.addAction(UIAlertAction(
+            title: "変更内容を破棄",
+            style: .destructive,
+            handler: {(action) -> Void in
+                self.cancel(nil)
+            }
+        ))
+//        if let firstSubview = alert.view.subviews.first, let alertContentView = firstSubview.subviews.first {
+//            for view in alertContentView.subviews {
+//                view.backgroundColor = PalermColor.Dark100.UIColor
+//            }
+//        }
+        
+        self.present(alert, animated: true, completion: nil)
     }
 
 }
@@ -602,6 +638,9 @@ extension AlermSettingViewController {
         cell.detailTextLabel?.textColor = UIColor(hexString: "8E8E93")
         cell.isUserInteractionEnabled = true
         cell.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(self.navigateSoundSetting(_:))))
+        let selectedBgView = UIView()
+        selectedBgView.backgroundColor = UIColor(hexString: "404040")
+        cell.selectedBackgroundView = selectedBgView
         return cell
     }
     
@@ -622,6 +661,9 @@ extension AlermSettingViewController {
         cell.textLabel?.textColor = .red
         cell.textLabel?.textAlignment = .center
         cell.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(self.confirmDeleteAlerm(_:))))
+        let selectedBgView = UIView()
+        selectedBgView.backgroundColor = UIColor(hexString: "404040")
+        cell.selectedBackgroundView = selectedBgView
         return cell
     }
 }
@@ -736,6 +778,14 @@ extension AlermSettingViewController {
             }
         ))
         
+//        alert.view.tintColor = PalermColor.Dark200.UIColor
+        
         self.present(alert, animated: true, completion: nil)
+    }
+}
+
+extension AlermSettingViewController: UIAdaptivePresentationControllerDelegate {
+    func presentationControllerDidAttemptToDismiss(_ presentationController: UIPresentationController) {
+        self.confirmDeleteEdit()
     }
 }
