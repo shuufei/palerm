@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import AVFoundation
 
 struct AlermTime: Codable, Equatable {
     let hour: String
@@ -62,6 +63,7 @@ class AlermSettingViewController: UIViewController {
     private var currentHour: String = "00"
     private var selectingHour: String? = nil
     private var alermTimeLabelStackList: [UIStackView] = []
+    var audioPlayer: AVAudioPlayer? = nil
     
     private let alermListModel: AlermListModel = .shared
     
@@ -97,6 +99,7 @@ class AlermSettingViewController: UIViewController {
     
     private func setup() {
         self.view.backgroundColor = PalermColor.Dark500.UIColor
+        self.setAudioPlayer()
         self.setNavBar()
         self.setScrollView()
         self.setHoursView()
@@ -202,6 +205,17 @@ class AlermSettingViewController: UIViewController {
 //        }
         
         self.present(alert, animated: true, completion: nil)
+    }
+    
+    private func setAudioPlayer() {
+        guard let path = Bundle.main.path(forResource: "alarm", ofType: "mp3") else {
+            print("Not found mp3.")
+            return
+        }
+        do {
+            self.audioPlayer = try AVAudioPlayer(contentsOf: URL(fileURLWithPath: path))
+        } catch {
+        }
     }
 
 }
@@ -573,8 +587,10 @@ extension AlermSettingViewController {
         let topBorder = self.generateSeparateBorder()
         self.setSettignCellConstraints(target: topBorder, topAnchorTarget: self.loopView.bottomAnchor, topMargin: 32, height: borderHeight)
         
-        let soundSettingCell = self.generateSoundSettingCell()
-        self.setSettignCellConstraints(target: soundSettingCell, topAnchorTarget: topBorder.bottomAnchor, topMargin: 0, height: 44)
+//        let soundSettingCell = self.generateSoundSettingCell()
+//        self.setSettignCellConstraints(target: soundSettingCell, topAnchorTarget: topBorder.bottomAnchor, topMargin: 0, height: 44)
+        let confirmSoundCell = self.generateConfirmAlermSoundCell()
+        self.setSettignCellConstraints(target: confirmSoundCell, topAnchorTarget: topBorder.bottomAnchor, topMargin: 0, height: 44)
 
 //        let cellSeparateBorder = self.setAndGetCellSeparateBorder(topAnchorTarget: soundSettingCell.bottomAnchor, topMargin: 0, height: borderHeight)
 //
@@ -582,7 +598,7 @@ extension AlermSettingViewController {
 //        self.setSettignCellConstraints(target: snoozeSettingCell, topAnchorTarget: cellSeparateBorder.bottomAnchor, topMargin: 0, height: 48)
         
         let bottomBorder = self.generateSeparateBorder()
-        self.setSettignCellConstraints(target: bottomBorder, topAnchorTarget: soundSettingCell.bottomAnchor, topMargin: 0, height: borderHeight)
+        self.setSettignCellConstraints(target: bottomBorder, topAnchorTarget: confirmSoundCell.bottomAnchor, topMargin: 0, height: borderHeight)
 //        self.setSettignCellConstraints(target: bottomBorder, topAnchorTarget: snoozeSettingCell.bottomAnchor, topMargin: 0, height: borderHeight)
         
         let deleteCellTopBorder = self.generateSeparateBorder()
@@ -661,6 +677,19 @@ extension AlermSettingViewController {
         cell.textLabel?.textColor = .red
         cell.textLabel?.textAlignment = .center
         cell.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(self.confirmDeleteAlerm(_:))))
+        let selectedBgView = UIView()
+        selectedBgView.backgroundColor = UIColor(hexString: "404040")
+        cell.selectedBackgroundView = selectedBgView
+        return cell
+    }
+    
+    private func generateConfirmAlermSoundCell() -> UITableViewCell {
+        let cell = UITableViewCell(style: .default, reuseIdentifier: "delete")
+        cell.backgroundColor = PalermColor.Dark300.UIColor
+        cell.textLabel?.text = "アラーム音を確認"
+        cell.textLabel?.textColor = .white
+        cell.textLabel?.textAlignment = .center
+        cell.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(self.toggleAlermSound(_:))))
         let selectedBgView = UIView()
         selectedBgView.backgroundColor = UIColor(hexString: "404040")
         cell.selectedBackgroundView = selectedBgView
@@ -781,6 +810,20 @@ extension AlermSettingViewController {
 //        alert.view.tintColor = PalermColor.Dark200.UIColor
         
         self.present(alert, animated: true, completion: nil)
+    }
+    
+    private func toggleAlermSound(_ sender: UITapGestureRecognizer) {
+        guard self.audioPlayer != nil else { return }
+        guard let view = sender.view as? UITableViewCell else { return }
+        view.setHighlighted(true, animated: false)
+        if self.audioPlayer!.isPlaying {
+            self.audioPlayer!.pause()
+            view.textLabel?.text = "アラーム音を確認"
+            view.setHighlighted(false, animated: true)
+        } else {
+            self.audioPlayer!.play()
+            view.textLabel?.text = "停止"
+        }
     }
 }
 

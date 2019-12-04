@@ -27,6 +27,7 @@
 		C265E20923805065008C769D /* AlermSettingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C265E20823805065008C769D /* AlermSettingViewController.swift */; };
 		C2C4CF09238126AA006D3FD3 /* CircleCustomButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2C4CF08238126AA006D3FD3 /* CircleCustomButton.swift */; };
 		C2C4CF0F23857FEE006D3FD3 /* AlermSoundSetting.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2C4CF0E23857FEE006D3FD3 /* AlermSoundSetting.swift */; };
+		C2C4CF1123955248006D3FD3 /* alarm.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = C2C4CF1023955247006D3FD3 /* alarm.mp3 */; };
 		EE9C407F2F8CC2100EB5FD22 /* Pods_palerm_02.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B7F71B8A9A2A4107BF08DA25 /* Pods_palerm_02.framework */; };
 /* End PBXBuildFile section */
 
@@ -80,6 +81,7 @@
 		C265E20823805065008C769D /* AlermSettingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlermSettingViewController.swift; sourceTree = "<group>"; };
 		C2C4CF08238126AA006D3FD3 /* CircleCustomButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircleCustomButton.swift; sourceTree = "<group>"; };
 		C2C4CF0E23857FEE006D3FD3 /* AlermSoundSetting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlermSoundSetting.swift; sourceTree = "<group>"; };
+		C2C4CF1023955247006D3FD3 /* alarm.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; name = alarm.mp3; path = ../../../../../Downloads/alarm.mp3; sourceTree = "<group>"; };
 		C9484E9F2569F6C7D8881388 /* Pods-palerm-02Tests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-palerm-02Tests.debug.xcconfig"; path = "Target Support Files/Pods-palerm-02Tests/Pods-palerm-02Tests.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -149,6 +151,7 @@
 		C256298D234F5FD200F00191 /* palerm-02 */ = {
 			isa = PBXGroup;
 			children = (
+				C2C4CF1023955247006D3FD3 /* alarm.mp3 */,
 				C25629C6234F721000F00191 /* Util */,
 				C25629C1234F665A00F00191 /* Config */,
 				C265E2022378412E008C769D /* AlermCard */,
@@ -360,6 +363,7 @@
 				C2562999234F5FD300F00191 /* LaunchScreen.storyboard in Resources */,
 				C2562996234F5FD300F00191 /* Assets.xcassets in Resources */,
 				C2562994234F5FD200F00191 /* Main.storyboard in Resources */,
+				C2C4CF1123955248006D3FD3 /* alarm.mp3 in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
