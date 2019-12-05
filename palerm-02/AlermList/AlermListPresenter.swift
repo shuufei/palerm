@@ -9,6 +9,8 @@
 import UIKit
 import RxCocoa
 import RxSwift
+import UserNotifications
+import AVFoundation
 
 protocol AlermListPresenterInput {
     func loadAlermList()
@@ -66,6 +68,7 @@ final class AlermListPresenter: AlermListPresenterInput {
             self.view.reload()
         }
         .disposed(by: self.disposeBag)
+        self.sandboxNotification()
     }
 
     func loadAlermList() {
@@ -161,5 +164,63 @@ extension AlermListPresenter: AlermCardDelegate {
     
     func switchedAlermEnableOfCell(_ sender: UISwitch) {
         self.updateEnableAlermTimes()
+    }
+}
+
+extension AlermListPresenter {
+    func sandboxNotification() {
+        self.mvAlarmSound2Sounds()
+        let center = UNUserNotificationCenter.current()
+        center.requestAuthorization(options: [.sound, .alert, .criticalAlert]) { (granted, error) in
+            if error != nil { return }
+            if granted {
+                print("--- notification ok")
+                self.setNotification(hour: 23, minute: 55)
+                self.setNotification(hour: 00, minute: 02)
+            } else {
+                print("--- notification ng")
+            }
+            
+        }
+    }
+    
+    func setNotification(hour: Int, minute: Int, second: Int = 0) {
+        let content = UNMutableNotificationContent()
+        content.title = "Calender Alerm"
+        content.subtitle = "Subtitle"
+        content.body = "Body"
+        content.sound = UNNotificationSound(named: UNNotificationSoundName(rawValue: "alerm-29sec.m4a"))
+        
+        let idenfier = UUID().uuidString
+        
+        for i in 0...5 {
+            var dateCommponents = DateComponents()
+            dateCommponents.hour = hour
+            dateCommponents.minute = minute
+            dateCommponents.second = second + (i*5)
+            let calendarTrigger = UNCalendarNotificationTrigger(dateMatching: dateCommponents, repeats: false)
+            let calenderRequest = UNNotificationRequest(identifier: "\(idenfier)-\(i)", content: content, trigger: calendarTrigger)
+            UNUserNotificationCenter.current().add(calenderRequest, withCompletionHandler: nil)
+        }
+
+    }
+    
+    func mvAlarmSound2Sounds() {
+        do {
+            let libraryUrl = FileManager.default.urls(for: .libraryDirectory, in: .userDomainMask)[0]
+            let soundDirUrl = libraryUrl.appendingPathComponent("Sounds")
+            try? FileManager.default.createDirectory(at: soundDirUrl, withIntermediateDirectories: true, attributes: nil)
+            
+            let path = Bundle.main.path(forResource: "alerm-28sec", ofType: "m4a")!
+            let from = URL(fileURLWithPath: path)
+            let dest = soundDirUrl.appendingPathComponent("alerm-29sec.m4a")
+            let isExist = FileManager.default.fileExists(atPath: dest.relativePath)
+            if !isExist {
+                try FileManager.default.copyItem(at: from, to: dest)
+            }
+            print("--- success mv alarm sound")
+        } catch let error {
+            print("--- mv alarm sound failed: ", error)
+        }
     }
 }

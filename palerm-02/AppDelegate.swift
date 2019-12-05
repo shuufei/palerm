@@ -7,14 +7,18 @@
 //
 
 import UIKit
+import AVFoundation
 
 @UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate {
+class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterDelegate {
 
     var window: UIWindow?
 
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+        let center = UNUserNotificationCenter.current()
+        center.delegate = self
+        
         let alermListViewController = UIStoryboard(name: "AlermList", bundle: nil).instantiateInitialViewController() as! AlermListViewController
         
         let model: AlermListModel = .shared
@@ -48,6 +52,22 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func applicationWillTerminate(_ application: UIApplication) {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
+    }
+    
+    @available(iOS 10.0, *)
+    func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
+        completionHandler([.alert, .sound])
+    }
+    
+    func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
+        let identifier = response.notification.request.identifier
+        let prefix = identifier[identifier.startIndex..<identifier.index(before: identifier.endIndex)]
+        var identifiers: [String] = []
+        for i in 0...5 {
+            identifiers.append("\(prefix)\(i)")
+        }
+        print("-- identifier: ", identifier, prefix, identifiers)
+        center.removePendingNotificationRequests(withIdentifiers: identifiers)
     }
 
 
