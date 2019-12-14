@@ -68,7 +68,7 @@ final class AlermListPresenter: AlermListPresenterInput {
             self.view.reload()
         }
         .disposed(by: self.disposeBag)
-        self.sandboxNotification()
+//        self.sandboxNotification()
     }
 
     func loadAlermList() {
@@ -175,8 +175,8 @@ extension AlermListPresenter {
             if error != nil { return }
             if granted {
                 print("--- notification ok")
-                self.setNotification(hour: 23, minute: 55)
-                self.setNotification(hour: 00, minute: 02)
+//                self.setNotification(hour: 23, minute: 55)
+                self.setNotification(hour: 00, minute: 33)
             } else {
                 print("--- notification ng")
             }
@@ -193,13 +193,14 @@ extension AlermListPresenter {
         
         let idenfier = UUID().uuidString
         
-        for i in 0...5 {
+        for i in 0..<1 {
             var dateCommponents = DateComponents()
             dateCommponents.hour = hour
             dateCommponents.minute = minute
             dateCommponents.second = second + (i*5)
             let calendarTrigger = UNCalendarNotificationTrigger(dateMatching: dateCommponents, repeats: false)
             let calenderRequest = UNNotificationRequest(identifier: "\(idenfier)-\(i)", content: content, trigger: calendarTrigger)
+            UNUserNotificationCenter.current().delegate = self as? UNUserNotificationCenterDelegate
             UNUserNotificationCenter.current().add(calenderRequest, withCompletionHandler: nil)
         }
 

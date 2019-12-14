@@ -32,8 +32,8 @@ final class AlermListViewController: UIViewController {
     func setup() {
         self.setConstraintsForTableView()
         self.setAddPalermButton()
-        self.view.backgroundColor = PalermColor.Dark200.UIColor
-        self.tableView.backgroundColor = PalermColor.Dark200.UIColor
+        self.view.backgroundColor = PalermColor.Dark100.UIColor
+        self.tableView.backgroundColor = PalermColor.Dark100.UIColor
         self.tableView.separatorStyle = .none
         self.tableView.allowsSelection = false
         self.tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 160, right: 0)
@@ -50,7 +50,7 @@ final class AlermListViewController: UIViewController {
     private func setAddPalermButton() {
         let button = UIButton(type: .custom)
         button.setImage(UIImage(named: "add"), for: .normal)
-        button.backgroundColor = PalermColor.Dark100.UIColor
+        button.backgroundColor = PalermColor.Dark200.UIColor
         button.layer.masksToBounds = false
         button.layer.cornerRadius = CGFloat(button.frame.width / 2)
         button.layer.shadowOffset = CGSize(width: 0.0, height: 3.0)
